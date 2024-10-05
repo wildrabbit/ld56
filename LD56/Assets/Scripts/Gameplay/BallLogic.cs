@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
+
 
 public class BallLogic : MonoBehaviour
 {
@@ -17,6 +17,11 @@ public class BallLogic : MonoBehaviour
     [SerializeField] bool startActive;
 
     [SerializeField] Rect bounds = new Rect(-10f, -5.5f, 20, 11);
+
+    public Action<BallLogic, BallLogic[]> Split;
+    // public Action<BallLogic, GameObject> GeneratedBichi;
+    // public Action<BallLogic, GameObject> GeneratedPowerup;
+    public Action<BallLogic> Destroyed;
 
     bool active = false;
     Collider2D collisionShape;
@@ -84,34 +89,50 @@ public class BallLogic : MonoBehaviour
     {
         if(splitPrefab != null)
         {
-            Split();
+            SplitInto();
         }
-        // else: Bichi stuff
+        else
+        {
+            Kill();
+        }
+    }
+
+    public void Kill(bool notify = true)
+    {
+        if(notify)
+        {
+            Destroyed?.Invoke(this);
+        }        
         Destroy(gameObject);
     }
 
-    public void Split()
+    public void OnDestroy()
+    {
+        Destroyed?.Invoke(this);
+    }
+
+    public void SplitInto()
     {
         Vector2 rootPos = transform.position;
         // FIND POSITIONS!
-        var left = Instantiate(splitPrefab, null);
+        var left = Instantiate(splitPrefab, transform.parent);
         var pos = rootPos + Vector2.left * (left.radius + 0.5f);
+        if(Physics2D.OverlapCircle(pos, left.radius, bounceLayer))
+        {
+            pos = rootPos;
+        }
         left.transform.position = pos;
 
         // right:
         var right = Instantiate(splitPrefab, null);
         pos = rootPos + Vector2.right * (right.radius + 0.5f);
         right.transform.position = pos;
+
+        Split?.Invoke(this, new BallLogic[] { left, right });
     }
 
     public void Update()
     {
-        if (Keyboard.current.zKey.isPressed)
-        {
-            Pop();
-            return;
-        }
-
         if (!active) return;
 
         float delta = Time.deltaTime;
