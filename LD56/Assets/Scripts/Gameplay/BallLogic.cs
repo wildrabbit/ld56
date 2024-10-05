@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class BallLogic : MonoBehaviour
 {
-    // [SerializeField] BallLogic splitPrefab;
-    // [SerializeField] int ballsOnSplit = 2;
+    [SerializeField] BallLogic splitPrefab;
+    // [SerializeField] Bichi bichiPrefab;
 
     [SerializeField] float radius = 1f;
     [SerializeField] float startAngleDegrees = 30f;
@@ -80,15 +80,28 @@ public class BallLogic : MonoBehaviour
         active = true;
     }
 
+    public void Pop()
+    {
+        if(splitPrefab != null)
+        {
+            Split();
+        }
+        // else: Bichi stuff
+        Destroy(gameObject);
+    }
+
     public void Split()
     {
         Vector2 rootPos = transform.position;
-        float separation = radius;
-       
-        // left:
+        // FIND POSITIONS!
+        var left = Instantiate(splitPrefab, null);
+        var pos = rootPos + Vector2.left * (left.radius + 0.5f);
+        left.transform.position = pos;
 
         // right:
-        
+        var right = Instantiate(splitPrefab, null);
+        pos = rootPos + Vector2.right * (right.radius + 0.5f);
+        right.transform.position = pos;
     }
 
     public void Update()
@@ -98,20 +111,22 @@ public class BallLogic : MonoBehaviour
             SceneManager.LoadScene(0);
             return;
         }
+        if (Keyboard.current.zKey.isPressed)
+        {
+            Pop();
+            return;
+        }
 
         if (!active) return;
 
         float delta = Time.deltaTime;
-    }
-
-    public void FixedUpdate()
-    {
-        UpdateMovement(Time.fixedDeltaTime);
+        UpdateMovement(delta);
     }
 
     private void UpdateMovement(float deltaTime)
     {
         Vector2 vNorm = velocity.normalized;
+        float vMag = velocity.magnitude;
         Vector2 pos = transform.position;
         bounceRaycastResult = Physics2D.CircleCast(pos, radius, vNorm, velocity.magnitude * deltaTime, bounceLayer);
 
@@ -125,7 +140,7 @@ public class BallLogic : MonoBehaviour
         else
         {
             pos = bounceRaycastResult.centroid - vNorm * 0.02f;
-            velocity = speed * Vector2.Reflect(vNorm, bounceRaycastResult.normal);
+            velocity = vMag * Vector2.Reflect(vNorm, bounceRaycastResult.normal);
         }
 
         transform.position = pos;
