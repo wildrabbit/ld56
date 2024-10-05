@@ -106,11 +106,6 @@ public class BallLogic : MonoBehaviour
 
     public void Update()
     {
-        if(Keyboard.current.spaceKey.isPressed)
-        {
-            SceneManager.LoadScene(0);
-            return;
-        }
         if (Keyboard.current.zKey.isPressed)
         {
             Pop();
