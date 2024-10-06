@@ -85,16 +85,24 @@ public class HarpoonProjectile : MonoBehaviour
             }
         }
 
-        //var destructible = Physics2D.OverlapBox(boxPos, box.size, 0f, destructLayer);
-        //if (destructible != null)
-        //{
-        //    var destructRef = destructible.GetComponentInParent<Destructible>();
-        //    if (destructRef != null)
-        //    {
-        //        destructRef.Kill();
-        //        kill = !pierceDestructibles;
-        //    }
-        //}
+        var destructible = Physics2D.OverlapBox(boxPos, box.size, 0f, destructLayer);
+        if (destructible != null)
+        {
+            var destructRef = destructible.GetComponentInParent<SingleDestructible>();
+            if (destructRef != null)
+            {
+                destructRef.Hit();
+                kill = !pierceDestructibles;
+            }
+            else
+            {
+                //var chainRef = destructible.GetComponentInParent<ChainDestructible>();
+                //if(chainRef != null)
+                //{
+                //    chainRef.Detonate();
+                //}
+            }
+        }
 
         var indestructible = Physics2D.OverlapBox(boxPos, box.size, 0f, boundsLayer);
         if (indestructible != null)
