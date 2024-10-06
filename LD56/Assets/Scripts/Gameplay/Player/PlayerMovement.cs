@@ -54,10 +54,12 @@ public class PlayerMovement : MonoBehaviour
 
         if(Mathf.Approximately(axis, 0f))
         {
+            velocity = Vector2.zero;
             return;
         }
 
         var vNorm = axis > 0 ? Vector2.right : Vector2.left;
+        var lastVel = velocity;
 
         Vector2 boxPos = (Vector2)moveCollider.transform.position + moveCollider.offset;
         Vector2 delta = boxPos - pos;
@@ -75,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
             velocity = axis * speed * Vector2.right;
             pos += velocity * dt;
         }
+
         transform.position = pos;
     }
 }

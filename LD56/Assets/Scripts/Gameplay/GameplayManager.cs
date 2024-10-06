@@ -41,6 +41,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] float gameOverDelay = 2f;
 
     bool testRestartPressed;
+    bool testDamagePressed;
     bool testPopPressed;
     GameResult gameResult;
     
@@ -59,6 +60,7 @@ public class GameplayManager : MonoBehaviour
     private void Start()
     {
         testRestartPressed = testPopPressed = false;
+        testDamagePressed = false;
         StartGame();
     }
 
@@ -168,7 +170,21 @@ public class GameplayManager : MonoBehaviour
             return;
         }
 
+        bool wasDamagePressed = testDamagePressed;
+        testDamagePressed = ReadDamageTest();
+        bool dmgReleased = wasDamagePressed && !testDamagePressed;
+        if ((dmgReleased))
+        {
+            player.Hit(1);
+        }
+
         EvaluateVictory();
+    }
+
+    private bool ReadDamageTest()
+    {
+        return (Keyboard.current != null && Keyboard.current.numpadMinusKey.isPressed)
+    || (Gamepad.current != null && Gamepad.current.leftShoulder.isPressed);
     }
 
     private void EvaluateVictory()

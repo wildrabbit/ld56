@@ -8,6 +8,7 @@ public class HarpoonProjectile : MonoBehaviour
     [SerializeField] bool pierceDestructibles = false;
     [SerializeField] Transform refPos;
     [SerializeField] Transform lineRenderer;
+    [SerializeField] SpriteRenderer lineSpr;
 
     private BoxCollider2D box;
     private PlayerLogic parent;
@@ -38,10 +39,20 @@ public class HarpoonProjectile : MonoBehaviour
     private void RefreshSize(float len)
     {
         curLineHeight = len;
-        
-        var lineScale = lineRenderer.localScale;
-        lineScale.y = curLineHeight;
-        lineRenderer.localScale = lineScale;
+
+        if(lineSpr.drawMode == SpriteDrawMode.Tiled)
+        {
+            var sz = lineSpr.size;
+            sz.y = curLineHeight;
+            lineSpr.size = sz;
+        }
+        else
+        {
+            var lineScale = lineRenderer.localScale;
+            lineScale.y = curLineHeight;
+            lineRenderer.localScale = lineScale;
+        }
+
         
         var linePos = lineRenderer.localPosition;
         linePos.y = -curLineHeight * 0.5f;

@@ -1,7 +1,6 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public enum Facing
@@ -22,6 +21,10 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] float gracePeriodOnHit = 2f;
     [SerializeField] BoxCollider2D lifeCollider;
     [SerializeField] BoxCollider2D bichiCollectCollider;
+    
+    [SerializeField] Animator animator;
+
+
     public bool Dead => hp == 0;
     public Transform groundAttachment;
     public int BichisRescued => bichisRescued;
@@ -44,9 +47,22 @@ public class PlayerLogic : MonoBehaviour
     List<Collider2D> bichiColliders = new List<Collider2D>();
 
     GameResult gameResult;
-    
+    private int idle;
+    private int left;
+    private int right;
+    private int shoot;
+    private int hit;
+    private int dead;
+
     private void Awake()
     {
+        idle = Animator.StringToHash("Idle");
+        left = Animator.StringToHash("Left");
+        right = Animator.StringToHash("Right");
+        shoot = Animator.StringToHash("Shoot");
+        hit = Animator.StringToHash("Hit");
+        dead = Animator.StringToHash("Dead");
+
         startPos = transform.position;
         active = startActive;
         movement = GetComponent<PlayerMovement>();
@@ -72,6 +88,8 @@ public class PlayerLogic : MonoBehaviour
             currentWeapon = defaultWeapon;
             currentWeapon.Init(this, true);
         }
+        animator.Rebind();
+        animator.Play(idle);
     }
 
     public void Activate()
@@ -151,27 +169,71 @@ public class PlayerLogic : MonoBehaviour
         if(input.shootReleased && currentWeapon != null)
         {
             bool success = currentWeapon.TryShoot();            
+            if(success)
+            {
+                animator.Play(shoot);
+            }
         }
 
+        var velocity = movement.velocity;
         movement.UpdateMove(dt, input.xAxis);
+        var newVel = movement.velocity;
+        bool zeroVel = Mathf.Approximately(newVel.magnitude, 0f);
+        if (newVel != velocity)
+        {
+            if (zeroVel)
+            {
+                animator.Play(idle);
+            }
+            else if (Mathf.Sign(newVel.x) != Mathf.Sign(velocity.x) || Mathf.Approximately(velocity.magnitude, 0f))
+            {
+                if(newVel.x > 0)
+                {
+                    animator.Play(right);
+                }
+                else animator.Play(left);
+            }
+        }
+        else
+        {
+            if (!zeroVel && (IsPlayingAnimation(idle) || IsPlayingAnimation(shoot)))
+            {
+                if (newVel.x > 0)
+                {
+                    animator.Play(right);
+                }
+                else animator.Play(left);
+            }
+        }
+
     }
 
-    private bool TakeHit()
+    private bool IsPlayingAnimation(int hash)
     {
-        hp = Mathf.Max(hp - 1, 0);
+        bool animatorPlaying = animator.GetCurrentAnimatorStateInfo(0).length >
+                   animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        int shortH = animator.GetCurrentAnimatorStateInfo(0).shortNameHash;
+        return animatorPlaying && shortH == hash;
+        
+    }
+
+    private bool TakeHit(int dmg = 1)
+    {
+        hp = Mathf.Max(hp - dmg, 0);
         Debug.Log($"<color=cyan>[PLAYER]</color> Ouch!");
         if (hp == 0)
         {
             Debug.Log($"<color=cyan>[PLAYER]</color> DIED ☠️");
-            Died?.Invoke(this);
-            input.Deactivate();
-            movement.Deactivate();
+            animator.Play(dead);
+            Deactivate();
+            StartCoroutine(DelayEvent());
             // visuals;
             return true;
         }
         else
         {
             Debug.Log($"<color=cyan>[PLAYER]</color> DMG {hp}/{numHP} 🤕");
+            animator.Play(hit, 1);
             TookHit?.Invoke(this, hp);
             if(gracePeriodOnHit > 0f)
             {
@@ -180,6 +242,13 @@ public class PlayerLogic : MonoBehaviour
             return false;
         }
         
+    }
+
+    private IEnumerator DelayEvent()
+    {
+        yield return new WaitForSeconds(1f);
+
+        Died?.Invoke(this);
     }
 
     private void UpdateInvulnerable(float dt)
@@ -192,5 +261,13 @@ public class PlayerLogic : MonoBehaviour
                 invulnerableElapsed = -1f;
             }
         }
+    }
+
+    public void Hit(int dmg)
+    {
+        if (invulnerableElapsed < 0f)
+        {
+            TakeHit(dmg);
+        }            
     }
 }

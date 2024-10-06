@@ -21,7 +21,7 @@ public class PlayerInput : MonoBehaviour
 
     private bool ReadShoot()
     {
-        return (Keyboard.current != null && Keyboard.current.xKey.isPressed)
+        return (Keyboard.current != null && (Keyboard.current.xKey.isPressed || Keyboard.current.zKey.isPressed || Keyboard.current.spaceKey.isPressed))
             || (Gamepad.current != null && Gamepad.current.aButton.isPressed);
     }
 
