@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475d5e8740eaae54a9ad11ea5dc9cb24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tier: 2
   splitPrefab: {fileID: 701891429484981090, guid: cd9c30bd6e1882b4c870c176b7ff3ad2, type: 3}
   radius: 0.5
   startAngleDegrees: 30

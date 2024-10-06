@@ -45,9 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475d5e8740eaae54a9ad11ea5dc9cb24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tier: 1
   splitPrefab: {fileID: 0}
   radius: 0.25
-  startAngleDegrees: 20
+  startAngleDegrees: 35
   maxHeight: 6
   maxLength: 8
   accel: -9.8

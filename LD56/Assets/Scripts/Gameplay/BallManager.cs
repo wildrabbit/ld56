@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -7,6 +8,9 @@ public class BallsManager:MonoBehaviour
     public List<BallLogic> balls = new();
 
     public int TotalBalls => balls.Count;
+
+    public event Action<BallLogic, bool> BallPopped;
+    public event Action<BallLogic> BallSpawned;
 
     public void StartGame(List<BallLogic> initial)
     {
@@ -20,24 +24,31 @@ public class BallsManager:MonoBehaviour
         {
             ball.Destroyed += OnBallDestroyed;
             ball.Split += OnBallSplit;
-            ball.GeneratedBichi += OnBichiSpawned;
+            ball.Popped += OnBallPopped;
+            //ball.GeneratedBichi += OnBichiSpawned;
 
             balls.Add(ball);
             ball.Activate();
-        }
+            BallSpawned?.Invoke(ball);
+}
+    }
+
+    private void OnBallPopped(BallLogic logic, bool propagate)
+    {
+        BallPopped?.Invoke(logic, propagate);
     }
 
     public void OnBallDestroyed(BallLogic ball)
     {
         ball.Destroyed -= OnBallDestroyed;
         ball.Split -= OnBallSplit;
-        ball.GeneratedBichi -= OnBichiSpawned;
+        ball.Popped -= OnBallPopped;
+        //ball.GeneratedBichi -= OnBichiSpawned;
         balls.Remove(ball);
     }
 
     private void OnBallSplit(BallLogic ball, BallLogic[] splitBalls)
     {
-        ball.Kill();
         RegisterBalls(splitBalls);        
     }
 
@@ -54,7 +65,8 @@ public class BallsManager:MonoBehaviour
             {
                 ball.Destroyed -= OnBallDestroyed;
                 ball.Split -= OnBallSplit;
-                ball.GeneratedBichi -= OnBichiSpawned;
+                ball.Popped -= OnBallPopped;
+                //ball.GeneratedBichi -= OnBichiSpawned;
                 ball.Kill(notify: false);
             }
         }

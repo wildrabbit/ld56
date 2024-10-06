@@ -11,14 +11,35 @@ public enum GameResult
     Lost
 }
 
+public enum WinCondition
+{
+    ZeroBalls,
+    MinBichis
+}
+
+public enum LoseCondition
+{
+    PlayerDeath,
+    LostBichis,
+    Timeout,
+}
+
 public class GameplayManager : MonoBehaviour
 {
     [SerializeField] BallsManager ballsManager;
+    [SerializeField] BichisManager bichisManager;
     [SerializeField] PlayerLogic player;
+
+    [SerializeField] WinCondition winCondition = WinCondition.ZeroBalls;
+    [SerializeField] LoseCondition loseCondition = LoseCondition.PlayerDeath;
+    [SerializeField] int bichisToSpawn = 4;
+    [SerializeField] int winBichis = 2;
+    [SerializeField] int masterBichis = 4;
 
     bool testRestartPressed;
     bool testPopPressed;
     GameResult gameResult;
+    
     private bool inputReady;
 
     private void Awake()
@@ -36,15 +57,13 @@ public class GameplayManager : MonoBehaviour
     {
         inputReady = Keyboard.current != null || Gamepad.current != null;
         var livingBalls = new List<BallLogic>(FindObjectsByType<BallLogic>(findObjectsInactive: FindObjectsInactive.Exclude, sortMode: FindObjectsSortMode.None));
+        ballsManager.StartGame(livingBalls);
 
         var livingBichis = new List<BichiLogic>(FindObjectsByType<BichiLogic>(findObjectsInactive: FindObjectsInactive.Exclude, sortMode: FindObjectsSortMode.None));
-        foreach(var bichi in livingBichis)
-        {
-            bichi.StartGame();
-        }
-
+        bichisManager.StartGame(livingBichis, bichisToSpawn);
+        
         gameResult = GameResult.None;
-        ballsManager.StartGame(livingBalls);
+        
         player.StartGame();
         player.Died += OnPlayerDied;
     }

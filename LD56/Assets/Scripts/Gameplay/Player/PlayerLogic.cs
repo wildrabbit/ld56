@@ -21,7 +21,7 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] PlayerWeapon defaultWeapon;
     [SerializeField] float gracePeriodOnHit = 2f;
     [SerializeField] BoxCollider2D lifeCollider;
-    [SerializeField] Collider2D bichiCollectCollider;
+    [SerializeField] BoxCollider2D bichiCollectCollider;
     public bool Dead => hp == 0;
     public Transform groundAttachment;
 
@@ -31,6 +31,7 @@ public class PlayerLogic : MonoBehaviour
 
     public event Action<PlayerLogic, int> TookHit;
     public event Action<PlayerLogic> Died;
+    public event Action<PlayerLogic, int> CollectedBichis;
 
     public bool active = false;
     public float invulnerableElapsed = -1f;
@@ -120,15 +121,17 @@ public class PlayerLogic : MonoBehaviour
                     {
                         return;
                     }
-                    ball.Pop();
+                    ball.Pop(playerHit:true);
                 }
             }
         }
 
-        Physics2D.OverlapCollider(bichiCollectCollider, bichisFilter, bichiColliders);
-        if (bichiColliders.Count > 0)
+        var colliders = Physics2D.OverlapBoxAll((Vector2)bichiCollectCollider.transform.position + bichiCollectCollider.offset, bichiCollectCollider.size, LayerMask.GetMask("Bichis"));
+        // Physics2D.OverlapCollider(bichiCollectCollider, bichisFilter, bichiColliders);
+        if (colliders.Length > 0)
         {
-            foreach(var bichi in bichiColliders)
+            int oldRescued = bichisRescued;
+            foreach(var bichi in colliders)
             {
                 var bichiLogic = bichi.gameObject.GetComponentInParent<BichiLogic>();
                 if(bichiLogic != null)
@@ -137,6 +140,10 @@ public class PlayerLogic : MonoBehaviour
                     bichiLogic.Kill();
                     Debug.Log($"<color=cyan>[PLAYER]</color> Picked a bichi! Rescued: {bichisRescued} 🐣");
                 }
+            }
+            if(oldRescued < bichisRescued)
+            {
+                CollectedBichis?.Invoke(this, bichisRescued);
             }
         }
 
