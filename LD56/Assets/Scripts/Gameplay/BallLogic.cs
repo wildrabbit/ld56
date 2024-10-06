@@ -139,6 +139,10 @@ public class BallLogic : MonoBehaviour
         // right:
         var right = Instantiate(splitPrefab, null);
         pos = rootPos + Vector2.right * (right.radius + 0.5f);
+        if (Physics2D.OverlapCircle(pos, right.radius, bounceLayer))
+        {
+            pos = rootPos;
+        }
         right.transform.position = pos;
 
         Split?.Invoke(this, new BallLogic[] { left, right });
