@@ -5,7 +5,7 @@ using UnityEngine;
 public class BallLogic : MonoBehaviour
 {
     [SerializeField] BallLogic splitPrefab;
-    // [SerializeField] Bichi bichiPrefab;
+    [SerializeField] BichiLogic bichiPrefab;
 
     [SerializeField] float radius = 1f;
     [SerializeField] float startAngleDegrees = 30f;
@@ -18,7 +18,7 @@ public class BallLogic : MonoBehaviour
     [SerializeField] Rect bounds = new Rect(-10f, -5.5f, 20, 11);
 
     public Action<BallLogic, BallLogic[]> Split;
-    // public Action<BallLogic, GameObject> GeneratedBichi;
+    public Action<BallLogic, BichiLogic> GeneratedBichi;
     // public Action<BallLogic, GameObject> GeneratedPowerup;
     public Action<BallLogic> Destroyed;
 
@@ -34,6 +34,7 @@ public class BallLogic : MonoBehaviour
     RaycastHit2D bounceRaycastResult;
     int bounceLayer;
     private bool flip;
+    public bool spawnBichi = false;
 
     private void Awake()
     {
@@ -89,16 +90,27 @@ public class BallLogic : MonoBehaviour
         active = true;
     }
 
-    public void Pop()
+    public void Pop(bool playerHit = false)
     {
         if(splitPrefab != null)
         {
             SplitInto();
         }
+        else if(bichiPrefab != null && spawnBichi && !playerHit)
+        {
+            SpawnBichi(bichiPrefab);
+        }
         else
         {
             Kill();
         }
+    }
+
+    private void SpawnBichi(BichiLogic bichiPrefab)
+    {
+        var bichi = Instantiate<BichiLogic>(bichiPrefab, null);
+        bichi.transform.position = transform.position;
+        GeneratedBichi?.Invoke(this, bichi);
     }
 
     public void Kill(bool notify = true)

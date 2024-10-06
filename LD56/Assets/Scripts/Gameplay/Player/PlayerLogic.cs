@@ -1,4 +1,7 @@
+﻿using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public enum Facing
@@ -18,6 +21,7 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] PlayerWeapon defaultWeapon;
     [SerializeField] float gracePeriodOnHit = 2f;
     [SerializeField] BoxCollider2D lifeCollider;
+    [SerializeField] Collider2D bichiCollectCollider;
     public bool Dead => hp == 0;
     public Transform groundAttachment;
 
@@ -31,8 +35,11 @@ public class PlayerLogic : MonoBehaviour
     public bool active = false;
     public float invulnerableElapsed = -1f;
     int hp = 3;
+    int bichisRescued;
     public Vector2 startPos;
     LayerMask ballsMask;
+    ContactFilter2D bichisFilter;
+    List<Collider2D> bichiColliders = new List<Collider2D>();
 
     GameResult gameResult;
     
@@ -42,7 +49,11 @@ public class PlayerLogic : MonoBehaviour
         active = startActive;
         movement = GetComponent<PlayerMovement>();
         input = GetComponent<PlayerInput>();
-        ballsMask = LayerMask.GetMask("Balls");
+        bichisFilter = new ContactFilter2D()
+        {
+            useLayerMask = true,
+            layerMask = LayerMask.GetMask("Bichis")
+        };
     }
 
     public void StartGame()
@@ -52,6 +63,8 @@ public class PlayerLogic : MonoBehaviour
         input.Activate();
         invulnerableElapsed = -1f;
         hp = numHP;
+        bichisRescued = 0;
+        bichiColliders.Clear();
         if (defaultWeapon != null)
         {
             currentWeapon = defaultWeapon;
@@ -93,10 +106,9 @@ public class PlayerLogic : MonoBehaviour
         float dt = Time.deltaTime;
         UpdateInvulnerable(dt);
 
-        if(invulnerableElapsed < 0f)
+        Vector2 boxPos = (Vector2)lifeCollider.transform.position + lifeCollider.offset;
+        if (invulnerableElapsed < 0f)
         {
-            Vector2 boxPos = (Vector2)lifeCollider.transform.position + lifeCollider.offset;
-
             var ballHit = Physics2D.OverlapBox(boxPos, lifeCollider.size, ballsMask);
             if (ballHit != null)
             {
@@ -113,15 +125,24 @@ public class PlayerLogic : MonoBehaviour
             }
         }
 
-        // Update grace period, death, etc
+        Physics2D.OverlapCollider(bichiCollectCollider, bichisFilter, bichiColliders);
+        if (bichiColliders.Count > 0)
+        {
+            foreach(var bichi in bichiColliders)
+            {
+                var bichiLogic = bichi.gameObject.GetComponentInParent<BichiLogic>();
+                if(bichiLogic != null)
+                {
+                    bichisRescued++;
+                    bichiLogic.Kill();
+                    Debug.Log($"<color=cyan>[PLAYER]</color> Picked a bichi! Rescued: {bichisRescued} 🐣");
+                }
+            }
+        }
 
         if(input.shootReleased && currentWeapon != null)
         {
-            bool success = currentWeapon.TryShoot();
-            if (success)
-            {
-                Debug.Log($"<color=cyan>PLAYER</color>Pew, pew!");
-            }
+            bool success = currentWeapon.TryShoot();            
         }
 
         movement.UpdateMove(dt, input.xAxis);
@@ -130,8 +151,10 @@ public class PlayerLogic : MonoBehaviour
     private bool TakeHit()
     {
         hp = Mathf.Max(hp - 1, 0);
+        Debug.Log($"<color=cyan>[PLAYER]</color> Ouch!");
         if (hp == 0)
         {
+            Debug.Log($"<color=cyan>[PLAYER]</color> DIED ☠️");
             Died?.Invoke(this);
             input.Deactivate();
             movement.Deactivate();
@@ -140,6 +163,7 @@ public class PlayerLogic : MonoBehaviour
         }
         else
         {
+            Debug.Log($"<color=cyan>[PLAYER]</color> DMG {hp}/{numHP} 🤕");
             TookHit?.Invoke(this, hp);
             if(gracePeriodOnHit > 0f)
             {

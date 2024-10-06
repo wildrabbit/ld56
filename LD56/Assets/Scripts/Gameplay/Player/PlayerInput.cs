@@ -10,19 +10,19 @@ public class PlayerInput : MonoBehaviour
 
     bool active = false;
     bool shootPressed = false;
+    bool inputReady = false;
 
     public void Activate()
     {
         active = true;
         xAxis = 0f;
-        shootPressed = ReadShoot();
-        shootReleased = false;
+        shootPressed = shootReleased = false;
     }
 
     private bool ReadShoot()
     {
-        return Keyboard.current.xKey.isPressed
-            || Gamepad.current.aButton.isPressed;
+        return (Keyboard.current != null && Keyboard.current.xKey.isPressed)
+            || (Gamepad.current != null && Gamepad.current.aButton.isPressed);
     }
 
     public void Deactivate() 
@@ -34,6 +34,17 @@ public class PlayerInput : MonoBehaviour
     void Update()
     {
         if (!active) return;
+
+#if UNITY_WEBGL
+        if(!inputReady)
+        {
+            if(Keyboard.current != null|| Gamepad.current != null)
+            {
+                inputReady = true;
+            }
+            return;
+        }
+#endif
 
         xAxis = ReadMovement();
         bool wasPressed = shootPressed;
@@ -51,15 +62,18 @@ public class PlayerInput : MonoBehaviour
         }
 
         float keyboardAxis = 0f;
-        if (Keyboard.current.leftArrowKey.isPressed || Keyboard.current.aKey.isPressed)
+        if ((Keyboard.current !=null))
         {
-            keyboardAxis = -1f;
+            if (Keyboard.current.leftArrowKey.isPressed || Keyboard.current.aKey.isPressed)
+            {
+                keyboardAxis = -1f;
+            }
+            else if (Keyboard.current.rightArrowKey.isPressed || Keyboard.current.dKey.isPressed)
+            {
+                keyboardAxis = 1f;
+            }
         }
-        else if (Keyboard.current.rightArrowKey.isPressed || Keyboard.current.dKey.isPressed)
-        {
-            keyboardAxis = 1f;
-        }
-
+        
         if (gamepadAxis != 0f)
         {
             motion = gamepadAxis;

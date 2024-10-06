@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -21,6 +20,7 @@ public class BallsManager:MonoBehaviour
         {
             ball.Destroyed += OnBallDestroyed;
             ball.Split += OnBallSplit;
+            ball.GeneratedBichi += OnBichiSpawned;
 
             balls.Add(ball);
             ball.Activate();
@@ -31,6 +31,7 @@ public class BallsManager:MonoBehaviour
     {
         ball.Destroyed -= OnBallDestroyed;
         ball.Split -= OnBallSplit;
+        ball.GeneratedBichi -= OnBichiSpawned;
         balls.Remove(ball);
     }
 
@@ -38,6 +39,11 @@ public class BallsManager:MonoBehaviour
     {
         ball.Kill();
         RegisterBalls(splitBalls);        
+    }
+
+    private void OnBichiSpawned(BallLogic ball, BichiLogic bichiLogic)
+    {
+        ball.Kill();
     }
 
     private void DestroyPending()
@@ -48,6 +54,7 @@ public class BallsManager:MonoBehaviour
             {
                 ball.Destroyed -= OnBallDestroyed;
                 ball.Split -= OnBallSplit;
+                ball.GeneratedBichi -= OnBichiSpawned;
                 ball.Kill(notify: false);
             }
         }

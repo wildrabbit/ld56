@@ -19,6 +19,7 @@ public class GameplayManager : MonoBehaviour
     bool testRestartPressed;
     bool testPopPressed;
     GameResult gameResult;
+    private bool inputReady;
 
     private void Awake()
     {
@@ -27,14 +28,21 @@ public class GameplayManager : MonoBehaviour
 
     private void Start()
     {
-        testRestartPressed = ReadRestart();
-        testPopPressed = ReadPopTest();
+        testRestartPressed = testPopPressed = false;
         StartGame();
     }
 
     private void StartGame()
     {
+        inputReady = Keyboard.current != null || Gamepad.current != null;
         var livingBalls = new List<BallLogic>(FindObjectsByType<BallLogic>(findObjectsInactive: FindObjectsInactive.Exclude, sortMode: FindObjectsSortMode.None));
+
+        var livingBichis = new List<BichiLogic>(FindObjectsByType<BichiLogic>(findObjectsInactive: FindObjectsInactive.Exclude, sortMode: FindObjectsSortMode.None));
+        foreach(var bichi in livingBichis)
+        {
+            bichi.StartGame();
+        }
+
         gameResult = GameResult.None;
         ballsManager.StartGame(livingBalls);
         player.StartGame();
@@ -48,19 +56,31 @@ public class GameplayManager : MonoBehaviour
 
     private bool ReadPopTest()
     {
-        return Keyboard.current.shiftKey.isPressed ||
-            Gamepad.current.selectButton.isPressed;
+        return (Keyboard.current != null && Keyboard.current.shiftKey.isPressed)
+            || (Gamepad.current != null && Gamepad.current.selectButton.isPressed);
     }
 
     private bool ReadRestart()
     {
-        return Keyboard.current.escapeKey.isPressed ||
-            Gamepad.current.startButton.isPressed;
+        return (Keyboard.current != null && Keyboard.current.escapeKey.isPressed)
+            || (Gamepad.current != null && Gamepad.current.startButton.isPressed);
     }
 
     // Update is called once per frame
     void Update()
     {
+
+#if UNITY_WEBGL
+        if (!inputReady)
+        {
+            if (Keyboard.current != null || Gamepad.current != null)
+            {
+                inputReady = true;
+            }
+            return;
+        }
+#endif
+
         if (gameResult != GameResult.None)
         {
             if(ReadAnything())
@@ -114,11 +134,11 @@ public class GameplayManager : MonoBehaviour
 
     private bool ReadAnything()
     {
-        return Keyboard.current.anyKey.isPressed
-            || Gamepad.current.aButton.isPressed
+        return (Keyboard.current != null && Keyboard.current.anyKey.isPressed)
+            || (Gamepad.current != null && (Gamepad.current.aButton.isPressed
             || Gamepad.current.bButton.isPressed
             || Gamepad.current.xButton.isPressed
-            || Gamepad.current.yButton.isPressed;
+            || Gamepad.current.yButton.isPressed));
     }
 
     private void Restart()
