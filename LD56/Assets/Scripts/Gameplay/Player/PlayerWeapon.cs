@@ -1,11 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerWeapon: MonoBehaviour
+public abstract class PlayerWeapon: MonoBehaviour
 {
     public float cooldown;
-    public GameObject projectile;
-    private PlayerLogic player;
+    protected PlayerLogic player;
     
     bool active = false;
     float elapsed = -1f;
@@ -15,7 +14,7 @@ public class PlayerWeapon: MonoBehaviour
     public event Action<PlayerWeapon> Activated;
     public event Action<PlayerWeapon> Deactivated;
 
-    void Init(PlayerLogic player, bool active = true)
+    public void Init(PlayerLogic player, bool active = true)
     {
         this.player = player;
         elapsed = -1f;
@@ -45,13 +44,18 @@ public class PlayerWeapon: MonoBehaviour
     {
         if(active && elapsed < 0)
         {
-            // Spawn projectile
-            elapsed = 0f;
-            ShotsFired?.Invoke(this);
-            return true;
+            var success = DoTryShoot();
+            if (success)
+            {
+                elapsed = 0f;
+                ShotsFired?.Invoke(this);
+            }            
+            return success;
         }
         return false;
     }
+
+    protected abstract bool DoTryShoot();
 
     private void Update()
     {

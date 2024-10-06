@@ -17,6 +17,7 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] bool startActive = false;
     [SerializeField] PlayerWeapon defaultWeapon;
     [SerializeField] float gracePeriodOnHit = 2f;
+    public Transform groundAttachment;
 
     PlayerWeapon currentWeapon;
     PlayerMovement movement;
@@ -44,6 +45,11 @@ public class PlayerLogic : MonoBehaviour
         active = true;
         movement.Init(moveSpeed, activate: true);
         input.Activate();
+        if (defaultWeapon != null)
+        {
+            currentWeapon = defaultWeapon;
+            currentWeapon.Init(this, true);
+        }
     }
 
     // Update is called once per frame
@@ -59,6 +65,10 @@ public class PlayerLogic : MonoBehaviour
         if(input.shootReleased && currentWeapon != null)
         {
             bool success = currentWeapon.TryShoot();
+            if (success)
+            {
+                Debug.Log($"<color=cyan>PLAYER</color>Pew, pew!");
+            }
         }
 
         float dt = Time.deltaTime;

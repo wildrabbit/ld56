@@ -17,8 +17,8 @@ TagManager:
   - Balls
   - Pickups
   - Hostiles
-  - Ground
-  - 
+  - Destructible
+  - PlayerWeapon
   - 
   - 
   - 
@@ -40,6 +40,15 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Weapon
+    uniqueID: 32862951
+    locked: 0
+  - name: Player
+    uniqueID: 4064579225
+    locked: 0
+  - name: Ball
+    uniqueID: 3054105491
     locked: 0
   m_RenderingLayers:
   - Default

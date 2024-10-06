@@ -38,10 +38,10 @@ public class BallLogic : MonoBehaviour
     private void Awake()
     {
         collisionShape = GetComponentInChildren<Collider2D>();
-        
+                
         acceleration = accel * Vector2.up;
         velocity = Vector2.zero;
-        bounceLayer = LayerMask.GetMask("Bounds");
+        bounceLayer = LayerMask.GetMask("Bounds", "Destructible");
 
         if(startActive)
         {
