@@ -143,7 +143,7 @@ Transform:
   m_GameObject: {fileID: 52663249}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.44, y: 3.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -925,11 +925,14 @@ MonoBehaviour:
   ballsManager: {fileID: 133779046}
   bichisManager: {fileID: 1439551613}
   player: {fileID: 8877831461813338051}
-  winCondition: 0
+  winCondition: 1
   loseCondition: 0
   bichisToSpawn: 4
   winBichis: 2
+  loseBichis: 3
   masterBichis: 4
+  timeoutSecs: 90
+  masterTimeSecs: 15
 --- !u!1 &659566914
 GameObject:
   m_ObjectHideFlags: 0
@@ -1914,6 +1917,10 @@ PrefabInstance:
     - target: {fileID: 6958425065694838505, guid: c27b2f227181282408774242c70918a7, type: 3}
       propertyPath: m_Name
       value: ChainDestructible
+      objectReference: {fileID: 0}
+    - target: {fileID: 6958425065694838505, guid: c27b2f227181282408774242c70918a7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

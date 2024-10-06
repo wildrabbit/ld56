@@ -24,6 +24,7 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] BoxCollider2D bichiCollectCollider;
     public bool Dead => hp == 0;
     public Transform groundAttachment;
+    public int BichisRescued => bichisRescued;
 
     PlayerWeapon currentWeapon;
     PlayerMovement movement;

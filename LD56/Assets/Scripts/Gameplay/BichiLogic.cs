@@ -14,6 +14,7 @@ public class BichiLogic : MonoBehaviour
 
 
     public event Action<BichiLogic> Destroyed;
+    public event Action<BichiLogic> Died;
 
     bool active = false;
     Vector2 velocity;
@@ -91,6 +92,7 @@ public class BichiLogic : MonoBehaviour
         else
         {
             Kill();
+            Died?.Invoke(this);
         }
     }
 }

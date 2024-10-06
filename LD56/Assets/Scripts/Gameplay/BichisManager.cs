@@ -11,6 +11,7 @@ public class BichisManager: MonoBehaviour
     [SerializeField] Transform bichisSpawnRef;
 
     public event Action<BichiLogic> GeneratedBichi;
+    public event Action<BichiLogic> BichiDied;
 
     List<BichiLogic> livingBichis = new();
 
@@ -25,6 +26,7 @@ public class BichisManager: MonoBehaviour
         foreach(var b in startBichis)
         {
             b.transform.SetParent(bichisRoot, worldPositionStays: true);
+            b.Died += OnBichiDied;
             b.Destroyed += OnBichiDestroyed;
             livingBichis.Add(b);
         }
@@ -71,6 +73,11 @@ public class BichisManager: MonoBehaviour
         ballsManager.BallSpawned += OnBallSpawned;
     }
 
+    private void OnBichiDied(BichiLogic logic)
+    {
+        BichiDied?.Invoke(logic);
+    }
+
     private void OnBallSpawned(BallLogic logic)
     {
         if(logic.tier == 1)
@@ -88,6 +95,7 @@ public class BichisManager: MonoBehaviour
     private void OnBichiDestroyed(BichiLogic logic)
     {
         logic.Destroyed -= OnBichiDestroyed;
+        logic.Died -= OnBichiDied;
         livingBichis.Remove(logic);
     }
 
@@ -99,6 +107,7 @@ public class BichisManager: MonoBehaviour
         bichi.transform.position = pos;
         bichi.Activate();
         bichi.Destroyed += OnBichiDestroyed;
+        bichi.Died += OnBichiDied;
         livingBichis.Add(bichi);
         GeneratedBichi?.Invoke(bichi);
     }
@@ -135,6 +144,7 @@ public class BichisManager: MonoBehaviour
             if(bichi != null)
             {
                 bichi.Destroyed -= OnBichiDestroyed;
+                bichi.Died -= OnBichiDied;
                 Destroy(bichi.gameObject);
             }
         }

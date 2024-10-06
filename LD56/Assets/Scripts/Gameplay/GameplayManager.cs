@@ -34,11 +34,20 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] LoseCondition loseCondition = LoseCondition.PlayerDeath;
     [SerializeField] int bichisToSpawn = 4;
     [SerializeField] int winBichis = 2;
+    [SerializeField] int loseBichis = 3;
     [SerializeField] int masterBichis = 4;
+    [SerializeField] float timeoutSecs;
+    [SerializeField] float masterTimeSecs;
+    [SerializeField] float gameOverDelay = 2f;
 
     bool testRestartPressed;
     bool testPopPressed;
     GameResult gameResult;
+    
+    float elapsed;
+    int bichisDead;
+    int lastSecond;
+    float gameOverElapsed;
     
     private bool inputReady;
 
@@ -61,11 +70,25 @@ public class GameplayManager : MonoBehaviour
 
         var livingBichis = new List<BichiLogic>(FindObjectsByType<BichiLogic>(findObjectsInactive: FindObjectsInactive.Exclude, sortMode: FindObjectsSortMode.None));
         bichisManager.StartGame(livingBichis, bichisToSpawn);
-        
+        bichisManager.BichiDied += OnBichiDied;
+        bichisDead = 0;
+
         gameResult = GameResult.None;
+        elapsed = 0f;
+        lastSecond = 0;
+        gameOverElapsed = -1f;
         
         player.StartGame();
         player.Died += OnPlayerDied;
+    }
+
+    private void OnBichiDied(BichiLogic logic)
+    {
+        bichisDead++;
+        if(loseCondition == LoseCondition.LostBichis && bichisDead >= loseBichis)
+        {
+            SetResult(GameResult.Lost);
+        }
     }
 
     private void OnPlayerDied(PlayerLogic logic)
@@ -99,13 +122,31 @@ public class GameplayManager : MonoBehaviour
             return;
         }
 #endif
-
+        var dt = Time.deltaTime;
         if (gameResult != GameResult.None)
         {
-            if(ReadAnything())
+            if(gameOverElapsed < gameOverDelay)
+            {
+                gameOverElapsed += dt;
+                return;
+            }
+            if (ReadAnything())
             {
                 Restart();
             }
+            return;
+        }
+
+        elapsed += dt;
+        int secsElapsed = Mathf.FloorToInt(elapsed);
+        if(secsElapsed != lastSecond)
+        {
+            lastSecond = secsElapsed;
+            Debug.Log($"T:{lastSecond}s");
+        }
+        if(loseCondition == LoseCondition.Timeout && elapsed > timeoutSecs)
+        {
+            SetResult(GameResult.Lost);
             return;
         }
 
@@ -127,13 +168,31 @@ public class GameplayManager : MonoBehaviour
             return;
         }
 
-        if (ballsManager.TotalBalls == 0 && !player.Dead)
+        EvaluateVictory();
+    }
+
+    private void EvaluateVictory()
+    {
+        if (winCondition == WinCondition.ZeroBalls)
         {
-            SetResult(GameResult.Won);
+            if (ballsManager.TotalBalls == 0 && !player.Dead)
+            {
+                bool mastered = elapsed <= masterTimeSecs;
+                SetResult(GameResult.Won, mastered);
+            }
+        }
+        else if(winCondition == WinCondition.MinBichis)
+        {
+            int rescued = player.BichisRescued;
+            if(rescued >= winBichis)
+            {
+                bool mastered = rescued > masterBichis;
+                SetResult(GameResult.Won, mastered);
+            }
         }
     }
 
-    private void SetResult(GameResult result)
+    private void SetResult(GameResult result, bool mastered = false)
     {
         gameResult = result;
         switch (gameResult)
@@ -141,14 +200,20 @@ public class GameplayManager : MonoBehaviour
             case GameResult.None:
                 break;
             case GameResult.Won:
-                Debug.Log("<color=yellow>[RESULT]</color> WON! 😎");
+                string masteryString = (mastered ? "🌟" : "");
+                Debug.Log($"<color=yellow>[RESULT]</color> WON! {masteryString}😎{masteryString}");
+                player.Deactivate();
+                ballsManager.ClearAll();
+                gameOverElapsed = 0f;
                 break;
             case GameResult.Lost:
                 Debug.Log("<color=yellow>[RESULT]</color> LOST! 😭");
+                player.Deactivate();
+                ballsManager.ClearAll();
+                gameOverElapsed = 0f;
                 break;
         }
-        player.Deactivate();
-        ballsManager.ClearAll();
+
     }
 
     private bool ReadAnything()
