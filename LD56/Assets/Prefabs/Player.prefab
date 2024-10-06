@@ -344,9 +344,10 @@ MonoBehaviour:
   startActive: 0
   defaultWeapon: {fileID: 3177004752205890028}
   gracePeriodOnHit: 2
+  lifeCollider: {fileID: 2816048057880524689}
   groundAttachment: {fileID: 2760538666473968795}
   active: 0
-  invulnerable: 0
+  invulnerableElapsed: -1
   startPos: {x: 0, y: 0}
 --- !u!114 &1335728105298228854
 MonoBehaviour:

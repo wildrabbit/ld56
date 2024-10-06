@@ -58,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        Debug.Log($"old v: {velocity}, axis: {axis}");
         var vNorm = axis > 0 ? Vector2.right : Vector2.left;
 
         Vector2 boxPos = (Vector2)box.transform.position + box.offset;

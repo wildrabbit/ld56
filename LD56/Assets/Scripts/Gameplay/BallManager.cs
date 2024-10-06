@@ -7,6 +7,8 @@ public class BallsManager:MonoBehaviour
 {
     public List<BallLogic> balls = new();
 
+    public int TotalBalls => balls.Count;
+
     public void StartGame(List<BallLogic> initial)
     {
         DestroyPending();
