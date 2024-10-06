@@ -112,7 +112,7 @@ public class HarpoonProjectile : MonoBehaviour
         }
     }
 
-    private void Kill()
+    public void Kill()
     {
         Destroyed?.Invoke(this);
         Destroy(gameObject);

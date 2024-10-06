@@ -1,8 +1,5 @@
 using System;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
-using UnityEngine.UIElements;
 
 public enum Facing
 {
@@ -62,10 +59,34 @@ public class PlayerLogic : MonoBehaviour
         }
     }
 
+    public void Activate()
+    {
+        if (!Dead)
+        {
+            active = true;
+            movement.Activate();
+            input.Activate();
+            if (currentWeapon != null)
+            {
+                currentWeapon.Activate();
+            }
+        }
+    }
+
+    public void Deactivate()
+    {
+        active = false;
+        movement.Deactivate();
+        input.Deactivate();
+        if (currentWeapon != null)
+        {
+            currentWeapon.Deactivate();
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        if(!active)
+        if(!active || Dead)
         {
             return;
         }

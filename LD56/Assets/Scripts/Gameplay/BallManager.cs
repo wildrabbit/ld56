@@ -42,32 +42,36 @@ public class BallsManager:MonoBehaviour
 
     private void DestroyPending()
     {
-        foreach(var ball in balls)
-        {
-            ball.Kill();
-        }
-    }
-
-    private void OnDestroy()
-    {
         foreach (var ball in balls)
         {
-            if(ball != null)
+            if (ball != null)
             {
                 ball.Destroyed -= OnBallDestroyed;
-                ball.Split -= OnBallSplit;            
-                ball.Kill(notify:false);
+                ball.Split -= OnBallSplit;
+                ball.Kill(notify: false);
             }
         }
         balls.Clear();
     }
 
+    private void OnDestroy()
+    {
+        DestroyPending();
+    }
+
     public void PopFirst()
     {
+#if UNITY_EDITOR
         if(balls.Count > 0)
         {
             var ball = balls[0];
             ball.Pop(); // Eventually leave this to a system, rather than letting the ball do it
         }
+#endif
+    }
+
+    public void ClearAll()
+    {
+        DestroyPending();
     }
 }

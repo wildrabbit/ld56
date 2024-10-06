@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 public class BallLogic : MonoBehaviour
@@ -34,6 +33,7 @@ public class BallLogic : MonoBehaviour
 
     RaycastHit2D bounceRaycastResult;
     int bounceLayer;
+    private bool flip;
 
     private void Awake()
     {
@@ -82,6 +82,10 @@ public class BallLogic : MonoBehaviour
 
         velocity = Vector2.zero;
         velocity = Vector2Utils.FromLengthAngle(speed, startAngleDegrees);
+        if(flip)
+        {
+            velocity.x = -velocity.x;
+        }
         active = true;
     }
 
@@ -122,6 +126,7 @@ public class BallLogic : MonoBehaviour
             pos = rootPos;
         }
         left.transform.position = pos;
+        left.flip = true;
 
         // right:
         var right = Instantiate(splitPrefab, null);

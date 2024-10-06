@@ -108,6 +108,8 @@ public class GameplayManager : MonoBehaviour
                 Debug.Log("<color=yellow>[RESULT]</color> LOST! 😭");
                 break;
         }
+        player.Deactivate();
+        ballsManager.ClearAll();
     }
 
     private bool ReadAnything()

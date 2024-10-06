@@ -28,4 +28,14 @@ public class HarpoonWeapon : PlayerWeapon
         projectile.Destroyed -= OnDestroyedProjectile;
         instances.Remove(projectile);
     }
+
+    protected override void DoDeactivate()
+    { 
+        foreach(var i in instances)
+        {
+            i.Destroyed -= OnDestroyedProjectile;
+            i.Kill();
+        }
+        instances.Clear();
+    }
 }

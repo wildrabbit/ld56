@@ -37,8 +37,12 @@ public abstract class PlayerWeapon: MonoBehaviour
     public void Deactivate(bool purgeChildren = false)
     {
         active = false;
+        DoDeactivate();
         Deactivated?.Invoke(this);
     }
+
+    protected virtual void DoDeactivate()
+    {}
 
     public bool TryShoot()
     {
