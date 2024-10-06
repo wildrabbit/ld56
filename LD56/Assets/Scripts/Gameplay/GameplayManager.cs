@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameplayManager : MonoBehaviour
 {
     [SerializeField] BallsManager ballsManager;
+    [SerializeField] PlayerLogic player;
 
     bool testRestartPressed;
     bool testPopPressed;
@@ -17,22 +18,35 @@ public class GameplayManager : MonoBehaviour
 
     private void Start()
     {
-        testRestartPressed = Keyboard.current.spaceKey.isPressed;
-        testPopPressed = Keyboard.current.zKey.isPressed;
+        testRestartPressed = ReadRestart();
+        testPopPressed = ReadPopTest();
         StartGame();
+    }
+
+    private bool ReadPopTest()
+    {
+        return Keyboard.current.shiftKey.isPressed ||
+            Gamepad.current.selectButton.isPressed;
+    }
+
+    private bool ReadRestart()
+    {
+        return Keyboard.current.escapeKey.isPressed ||
+            Gamepad.current.startButton.isPressed;
     }
 
     private void StartGame()
     {
         var livingBalls = new List<BallLogic>(FindObjectsByType<BallLogic>(findObjectsInactive: FindObjectsInactive.Exclude, sortMode: FindObjectsSortMode.None));
         ballsManager.StartGame(livingBalls);
+        player.StartGame();
     }
 
     // Update is called once per frame
     void Update()
     {
         bool wasRestartPressed = testRestartPressed;
-        testRestartPressed = Keyboard.current.spaceKey.isPressed;
+        testRestartPressed = ReadRestart();
         bool restartReleased = wasRestartPressed && !testRestartPressed;
         if (restartReleased)
         {
@@ -41,7 +55,7 @@ public class GameplayManager : MonoBehaviour
         }
 
         bool wasPopPressed = testPopPressed;
-        testPopPressed = Keyboard.current.zKey.isPressed;
+        testPopPressed = ReadPopTest();
         bool popReleased = wasPopPressed && !testPopPressed;
         if (popReleased)
         {

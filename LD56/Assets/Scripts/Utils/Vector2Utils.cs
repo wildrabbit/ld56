@@ -2,10 +2,10 @@
 
 public static class Vector2Utils
 {
-    public static Vector2 FromLengthAngle(float length, float angleDegrees)
+    public static Vector2 FromLengthAngle(float length, float angle)
     {
-        float angleRads = angleDegrees * Mathf.Deg2Rad;
-        return new Vector2(length * Mathf.Cos(angleRads)
-            , length * Mathf.Sin(angleRads));
+        float rads = Mathf.Deg2Rad * angle;
+        return new Vector2(length * Mathf.Cos(rads)
+            , length * Mathf.Sin(rads));
     }
 }
