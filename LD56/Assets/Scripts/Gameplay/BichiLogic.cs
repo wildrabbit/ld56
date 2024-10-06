@@ -23,16 +23,15 @@ public class BichiLogic : MonoBehaviour
     List<Collider2D> boundsHit = new List<Collider2D>();
     Vector2 startPos;
     float startNoise = 0f;
+    LayerMask boundsMask;
+    LayerMask destructibleMask;
 
     private void Awake()
     {
         active = startActive;
         hitCollider = GetComponentInChildren<CircleCollider2D>();
-        boundsFilter = new ContactFilter2D()
-        {
-            useLayerMask = true,
-            layerMask = LayerMask.GetMask("Bounds")
-        };
+        boundsMask = LayerMask.GetMask("Bounds");
+        destructibleMask = LayerMask.GetMask("Destructible");
     }
 
     public void StartGame()
@@ -71,14 +70,20 @@ public class BichiLogic : MonoBehaviour
             return;
         }
 
-        var pos = transform.position;
+        Vector2 pos = transform.position;
+        Vector2 hitColliderPos = (Vector2)hitCollider.transform.position + hitCollider.offset;
+        Vector2 delta = hitColliderPos - pos;
+
         pos.x = startPos.x + driftLimit * Mathf.Sin(startNoise + driftFreq * Time.time);
         pos.y = pos.y -dropSpeed * Time.deltaTime;
-        transform.position = pos;
 
+        var colliding = Physics2D.OverlapCircle(pos + delta, hitCollider.radius, destructibleMask);
+        if(colliding == null)
+        {
+            transform.position = pos;
+        }
 
-        Vector2 hitColliderPos = (Vector2)hitCollider.transform.position + hitCollider.offset;
-        var boundsHit = Physics2D.OverlapCircleAll(hitColliderPos, hitCollider.radius, LayerMask.GetMask("Bounds"));
+        var boundsHit = Physics2D.OverlapCircleAll(hitColliderPos, hitCollider.radius, boundsMask);
         if (boundsHit.Length == 0 || (boundsHit.Length == 1 && boundsHit[0].gameObject.CompareTag(ceiling)))
         {
             return;

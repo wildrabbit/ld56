@@ -96,11 +96,16 @@ public class HarpoonProjectile : MonoBehaviour
             }
             else
             {
-                //var chainRef = destructible.GetComponentInParent<ChainDestructible>();
-                //if(chainRef != null)
-                //{
-                //    chainRef.Detonate();
-                //}
+                var chainRef = destructible.GetComponentInParent<ChainDestructible>();
+                if (chainRef != null)
+                {
+                    var chainNode = destructible.GetComponent<ChainNode>();
+                    if ((chainNode != null))
+                    {
+                        chainRef.Detonate(chainNode);
+                        kill = !pierceDestructibles;
+                    }
+                }
             }
         }
 
