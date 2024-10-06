@@ -60,6 +60,7 @@ MonoBehaviour:
     y: -5.5
     width: 20
     height: 11
+  bichiInside: 0
 --- !u!1 &7779493156274146460
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,8 +138,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: 699e68e31ba04064ca8404542a0c21fc, type: 3}
-  m_Color: {r: 0.6792453, g: 0.21466713, b: 0.21466713, a: 1}
+  m_Sprite: {fileID: 5576255346163899295, guid: 01d4cf65511ff244cabaa84bccfa9dc8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
