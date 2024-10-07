@@ -55,6 +55,7 @@ MonoBehaviour:
   accel: -9.8
   speed: 3
   startActive: 1
+  bichiInsideVFX: {fileID: 0}
   bounds:
     serializedVersion: 2
     x: -10
