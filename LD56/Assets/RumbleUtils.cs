@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,8 +15,16 @@ public class RumbleUtils : MonoBehaviour
     
     float rumbleElapsed = -1f;
     float rumbleDuration = -1f;
-    bool gpAvailable = false;
     Gamepad gp = null;
+
+    private void Awake()
+    {
+        gp = Gamepad.current;
+        if(gp != null)
+        {
+            gp.SetMotorSpeeds(0f, 0f);
+        }
+    }
 
     public void PlaySmol()
     {
@@ -39,13 +48,7 @@ public class RumbleUtils : MonoBehaviour
         {
             return;
         }
-        if(gp != null)
-        {
-            gp.SetMotorSpeeds(0f, 0f);
-        }
-
-        rumbleElapsed = -1f;
-        rumbleDuration = -1f;
+        ForceStop();
     }
 
     public void PlayStronk()
@@ -68,5 +71,24 @@ public class RumbleUtils : MonoBehaviour
         }
     }
 
+    internal void ForceStop()
+    {
+        if (gp != null)
+        {
+            gp.SetMotorSpeeds(0f, 0f);
+        }
 
+        rumbleElapsed = -1f;
+        rumbleDuration = -1f;
+    }
+
+    void OnApplicationLostFocus()
+    {
+        ForceStop();
+    }
+
+    private void OnApplicationQuit()
+    {
+        ForceStop();
+    }
 }

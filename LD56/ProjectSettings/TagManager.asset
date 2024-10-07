@@ -48,6 +48,9 @@ TagManager:
   - name: Weapon
     uniqueID: 32862951
     locked: 0
+  - name: Bichis
+    uniqueID: 1643153971
+    locked: 0
   - name: Player
     uniqueID: 4064579225
     locked: 0

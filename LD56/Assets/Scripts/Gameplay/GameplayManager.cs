@@ -215,6 +215,7 @@ public class GameplayManager : MonoBehaviour
 
     private void PlayLevel(int idx)
     {
+        rumbleUtils.ForceStop();
         SceneManager.LoadScene(idx);
     }
 
@@ -251,22 +252,19 @@ public class GameplayManager : MonoBehaviour
         switch (gameResult)
         {
             case GameResult.None:
-                break;
+                return;
             case GameResult.Won:
                 string masteryString = (mastered ? "🌟" : "");
                 Debug.Log($"<color=yellow>[RESULT]</color> WON! {masteryString}😎{masteryString}");
-                player.Deactivate();
-                ballsManager.ClearAll();
-                gameOverElapsed = 0f;
                 break;
             case GameResult.Lost:
                 Debug.Log("<color=yellow>[RESULT]</color> LOST! 😭");
-                player.Deactivate();
-                ballsManager.ClearAll();
-                gameOverElapsed = 0f;
                 break;
         }
-
+        player.Deactivate();
+        ballsManager.ClearAll();
+        bichisManager.ClearAll();
+        gameOverElapsed = 0f;
     }
 
     private bool ReadAnything()
