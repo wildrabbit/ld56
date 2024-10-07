@@ -428,7 +428,7 @@ MonoBehaviour:
   masterBichis: 4
   timeoutSecs: 90
   masterTimeSecs: 15
-  gameOverDelay: 2
+  gameOverDelay: 1
   nextSceneIndex: 1
 --- !u!1 &3029142519832271808
 GameObject:

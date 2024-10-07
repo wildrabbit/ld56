@@ -173,7 +173,7 @@ public class GameplayManager : MonoBehaviour
             lastSecond = secsElapsed;
             Debug.Log($"T:{lastSecond}s");
         }
-        if(loseCondition == LoseCondition.Timeout && elapsed > timeoutSecs)
+        if(elapsed > timeoutSecs)
         {
             SetResult(GameResult.Lost);
             return;
