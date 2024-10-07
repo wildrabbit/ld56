@@ -846,8 +846,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Thank you for playing
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6b68e2f7e2fe84f40b67de0c5d89a646, type: 2}
-  m_sharedMaterial: {fileID: -2862040943482186760, guid: 6b68e2f7e2fe84f40b67de0c5d89a646, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9a54b4e217cc65742b16fec1df15b439, type: 2}
+  m_sharedMaterial: {fileID: 487783950217745635, guid: 9a54b4e217cc65742b16fec1df15b439, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -877,7 +877,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 69
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -982,8 +982,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: CONGRATS!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6b68e2f7e2fe84f40b67de0c5d89a646, type: 2}
-  m_sharedMaterial: {fileID: -2862040943482186760, guid: 6b68e2f7e2fe84f40b67de0c5d89a646, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9a54b4e217cc65742b16fec1df15b439, type: 2}
+  m_sharedMaterial: {fileID: 487783950217745635, guid: 9a54b4e217cc65742b16fec1df15b439, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1013,7 +1013,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 69
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1045,7 +1045,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 24.392166}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
