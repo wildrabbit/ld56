@@ -89,8 +89,7 @@ public class HUD : MonoBehaviour
 
     public void SetTimer(float timeLeft)
     {
-        TimeSpan ts = TimeSpan.FromSeconds(timeLeft);
-        timer.text = $"T: {ts.Seconds:000}s";
+        timer.text = $"T: {Mathf.FloorToInt(timeLeft):000}s";
     }
 
     public void SetLevel(string levelName)

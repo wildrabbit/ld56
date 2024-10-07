@@ -15,8 +15,7 @@ class LevelBriefing: MonoBehaviour
         gameObject.SetActive(true);
         this.levelName.text = levelName;
         this.goal.text = goal;
-        TimeSpan ts = TimeSpan.FromSeconds(time);
-        this.timer.text = $"{ts.Seconds:000}s";
+        this.timer.text = $"{Mathf.FloorToInt(time)}s";
         root.gameObject.SetActive(bichisLimit > 0);
         if(bichisLimit > 0)
         {
