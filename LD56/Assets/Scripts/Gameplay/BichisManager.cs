@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -104,15 +105,25 @@ public class BichisManager: MonoBehaviour
     public void SpawnBichi(BallLogic ball, BichiLogic bichiPrefab)
     {
         var bichi = Instantiate<BichiLogic>(bichiPrefab, bichisRoot);
-        var pos = ball.transform.position;
-        pos.y = bichisSpawnRef.position.y;
-        bichi.transform.position = pos;
-        bichi.Activate();
-        bichi.Destroyed += OnBichiDestroyed;
-        bichi.Dead += OnBichiDied;
         livingBichis.Add(bichi);
         GeneratedBichi?.Invoke(bichi);
+
+        var pos = ball.transform.position;
+        bichi.transform.position = pos;
+        bichi.Deactivate();
+        var localScale = bichi.transform.localScale;
+        bichi.transform.localScale = localScale * 0.5f;
+        float delta = bichisSpawnRef.position.y - pos.y;
+        float duration = delta / 10f;
+        bichi.transform.DOMoveY(bichisSpawnRef.position.y, duration).SetEase(Ease.OutQuart).OnComplete(() =>
+        {
+            bichi.transform.localScale = localScale;
+            bichi.Activate();
+            bichi.Destroyed += OnBichiDestroyed;
+            bichi.Dead += OnBichiDied;
+        });
     }
+
 
     private void OnBallPopped(BallLogic logic, bool propagate)
     {
