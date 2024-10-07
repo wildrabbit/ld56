@@ -429,7 +429,9 @@ MonoBehaviour:
   timeoutSecs: 90
   masterTimeSecs: 15
   gameOverDelay: 1
-  nextSceneIndex: 1
+  nextScene:
+    sceneAsset: {fileID: 102900000, guid: de08da49d1b2ec24c95187b5cfa4f413, type: 3}
+    scenePath: Assets/Scenes/Intro.unity
 --- !u!1 &3029142519832271808
 GameObject:
   m_ObjectHideFlags: 0

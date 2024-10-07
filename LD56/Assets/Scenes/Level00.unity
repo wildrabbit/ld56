@@ -192,6 +192,14 @@ PrefabInstance:
       propertyPath: bichisToSpawn
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: nextScene.scenePath
+      value: Assets/Scenes/Level01.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: nextScene.sceneAsset
+      value: 
+      objectReference: {fileID: 102900000, guid: 26c6944d670943a478564ccec05f2302, type: 3}
     - target: {fileID: 948124788139674603, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_Name
       value: SceneRoot

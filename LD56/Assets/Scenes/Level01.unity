@@ -270,6 +270,14 @@ PrefabInstance:
       propertyPath: nextSceneIndex
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: nextScene.scenePath
+      value: Assets/Scenes/Level02.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: nextScene.sceneAsset
+      value: 
+      objectReference: {fileID: 102900000, guid: bbd720517b915ff4cb5c12d610d787dc, type: 3}
     - target: {fileID: 948124788139674603, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_Name
       value: SceneRoot

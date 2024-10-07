@@ -41,7 +41,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] float masterTimeSecs;
     [SerializeField] float gameOverDelay = 2f;
 
-    [SerializeField] int nextSceneIndex = -1;
+    [SerializeField] SceneReference nextScene;
 
     bool testRestartPressed;
     bool testDamagePressed;
@@ -152,7 +152,7 @@ public class GameplayManager : MonoBehaviour
             {
                 if(gameResult == GameResult.Won)
                 {
-                    if (nextSceneIndex >= 0)
+                    if (!string.IsNullOrEmpty(nextScene.ScenePath))
                     {
                         NextLevel();
                     }
@@ -210,13 +210,20 @@ public class GameplayManager : MonoBehaviour
 
     private void NextLevel()
     {
-        PlayLevel(nextSceneIndex);
+        PlayLevel(nextScene.ScenePath);
     }
 
     private void PlayLevel(int idx)
     {
         rumbleUtils.ForceStop();
         SceneManager.LoadScene(idx);
+    }
+
+
+    private void PlayLevel(string path)
+    {
+        rumbleUtils.ForceStop();
+        SceneManager.LoadScene(path);
     }
 
     private bool ReadDamageTest()
