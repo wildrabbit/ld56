@@ -29,6 +29,10 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] HUD hud;
     [SerializeField] LevelBriefing intro;
     [SerializeField] LevelEndBriefing outro;
+    
+    [SerializeField] AudioSource sfxSrc;
+    [SerializeField] AudioClip win;
+    [SerializeField] AudioClip died;
 
     // Move to LevelData SO
     [SerializeField] string levelDisplayName;
@@ -171,6 +175,10 @@ public class GameplayManager : MonoBehaviour
 
     private void OnPlayerDied(PlayerLogic logic)
     {
+        if(sfxSrc != null)
+        {
+            sfxSrc.PlayOneShot(died);
+        }
         SetResult(GameResult.Lost);
     }
 
@@ -356,6 +364,10 @@ public class GameplayManager : MonoBehaviour
             case GameResult.None:
                 return;
             case GameResult.Won:
+                if (sfxSrc != null)
+                {
+                    sfxSrc.PlayOneShot(win);
+                }
                 player.PlayWin();
                 string masteryString = (mastered ? "🌟" : "");
                 Debug.Log($"<color=yellow>[RESULT]</color> WON! {masteryString}😎{masteryString}");

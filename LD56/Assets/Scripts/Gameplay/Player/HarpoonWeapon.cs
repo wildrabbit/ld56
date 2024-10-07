@@ -5,6 +5,7 @@ public class HarpoonWeapon : PlayerWeapon
 {
     [SerializeField] HarpoonProjectile prefab;
     [SerializeField] int instanceLimit = 1;
+    [SerializeField] AudioSource sfxSrcRef;
 
     List<HarpoonProjectile> instances = new();
 
@@ -16,6 +17,7 @@ public class HarpoonWeapon : PlayerWeapon
         }
 
         var newInstance = Instantiate<HarpoonProjectile>(prefab, null);
+        newInstance.shootSfx = sfxSrcRef;
         newInstance.transform.position = player.groundAttachment.position;
         newInstance.Destroyed += OnDestroyedProjectile;
         newInstance.Init(player);

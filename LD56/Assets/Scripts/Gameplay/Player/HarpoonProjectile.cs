@@ -9,6 +9,9 @@ public class HarpoonProjectile : MonoBehaviour
     [SerializeField] Transform refPos;
     [SerializeField] Transform lineRenderer;
     [SerializeField] SpriteRenderer lineSpr;
+    [SerializeField] public AudioClip clip;
+    
+    public AudioSource shootSfx;
 
     private BoxCollider2D box;
     private PlayerLogic parent;
@@ -34,10 +37,12 @@ public class HarpoonProjectile : MonoBehaviour
     {
         this.parent = parent;
         RefreshSize(startLength);
+        shootSfx.PlayOneShot(clip);
     }
 
     private void RefreshSize(float len)
     {
+
         curLineHeight = len;
 
         if(lineSpr.drawMode == SpriteDrawMode.Tiled)
