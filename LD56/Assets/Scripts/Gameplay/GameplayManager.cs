@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,15 +15,10 @@ public enum GameResult
 public enum WinCondition
 {
     ZeroBalls,
-    MinBichis
+    MinBichis,
+    Survival
 }
 
-public enum LoseCondition
-{
-    PlayerDeath,
-    LostBichis,
-    Timeout,
-}
 
 public class GameplayManager : MonoBehaviour
 {
@@ -31,11 +27,12 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] RumbleUtils rumbleUtils;
     [SerializeField] PlayerLogic player;
     [SerializeField] HUD hud;
+    [SerializeField] LevelBriefing intro;
+    [SerializeField] LevelEndBriefing outro;
 
     // Move to LevelData SO
     [SerializeField] string levelDisplayName;
     [SerializeField] WinCondition winCondition = WinCondition.ZeroBalls;
-    [SerializeField] LoseCondition loseCondition = LoseCondition.PlayerDeath;
     [SerializeField] int bichisToSpawn = 4;
     [SerializeField] int winBichis = 2;
     [SerializeField] int loseBichis = 3;
@@ -43,6 +40,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] float timeoutSecs;
     [SerializeField] float masterTimeSecs;
     [SerializeField] float gameOverDelay = 2f;
+    [SerializeField] private float introTime = 1.5f;
 
     [SerializeField] SceneReference nextScene;
 
@@ -55,19 +53,45 @@ public class GameplayManager : MonoBehaviour
     int bichisDead;
     int lastSecond;
     float gameOverElapsed;
+    bool ready = false;
     
     private bool inputReady;
+    
 
     private void Awake()
     {
+        ready = false;
         gameResult = GameResult.None;
+        intro.gameObject.SetActive(false);
+        outro.gameObject.SetActive(false);
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         testRestartPressed = testPopPressed = false;
         testDamagePressed = false;
+
+        intro.Show(levelDisplayName, GetGoalString(), timeoutSecs, loseBichis);
+        yield return new WaitForSeconds(introTime);
+        intro.Hide();
         StartGame();
+    }
+
+    private string GetGoalString()
+    {
+        if(winCondition == WinCondition.ZeroBalls)
+        {
+            return "Clear all balls!";
+        }
+        else if(winCondition == WinCondition.MinBichis)
+        {
+            return $"Rescue {winBichis} bichis or more!";
+        }
+        else if(winCondition == WinCondition.Survival)
+        {
+            return "Stay alive until the timer runs out!";
+        }
+        return "";
     }
 
     private void StartGame()
@@ -92,6 +116,7 @@ public class GameplayManager : MonoBehaviour
         player.LostAllHealth += OnPlayerLostHP;
 
         hud.StartGame(player.HP, BuildRescueStatuses(), levelDisplayName, timeoutSecs - elapsed);
+        ready = true;
     }
 
     private List<RescueStatus> BuildRescueStatuses()
@@ -138,7 +163,7 @@ public class GameplayManager : MonoBehaviour
     {
         rumbleUtils.PlaySmol();
         bichisDead++;
-        if(loseCondition == LoseCondition.LostBichis && bichisDead >= loseBichis)
+        if(loseBichis > 0 && bichisDead >= loseBichis)
         {
             SetResult(GameResult.Lost);
         }
@@ -164,7 +189,10 @@ public class GameplayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(!ready)
+        {
+            return;
+        }
 #if UNITY_WEBGL
         if (!inputReady)
         {
@@ -175,6 +203,21 @@ public class GameplayManager : MonoBehaviour
             return;
         }
 #endif
+
+#if UNITY_EDITOR
+        if(gameResult == GameResult.None)
+        {
+            if (InputUtils.IsKeyPressed(Key.Digit1))
+            {
+                SetResult(GameResult.Won);
+            }
+            else if (InputUtils.IsKeyPressed(Key.Digit2))
+            {
+                SetResult(GameResult.Lost);
+            }
+        }
+#endif
+
         var dt = Time.deltaTime;
         if (gameResult != GameResult.None)
         {
@@ -214,7 +257,15 @@ public class GameplayManager : MonoBehaviour
 
         if(elapsed > timeoutSecs)
         {
-            SetResult(GameResult.Lost);
+            if(winCondition == WinCondition.MinBichis && player.BichisRescued >= winBichis
+                || winCondition == WinCondition.Survival)
+            {
+                SetResult(GameResult.Won);
+            }
+            else
+            {
+                SetResult(GameResult.Lost);
+            }
             return;
         }
 
@@ -257,6 +308,7 @@ public class GameplayManager : MonoBehaviour
 
     private void PlayLevel(int idx)
     {
+        outro.Hide();
         rumbleUtils.ForceStop();
         SceneManager.LoadScene(idx);
     }
@@ -264,6 +316,7 @@ public class GameplayManager : MonoBehaviour
 
     private void PlayLevel(string path)
     {
+        outro.Hide();
         rumbleUtils.ForceStop();
         SceneManager.LoadScene(path);
     }
@@ -315,6 +368,7 @@ public class GameplayManager : MonoBehaviour
         ballsManager.ClearAll();
         bichisManager.ClearAll();
         gameOverElapsed = 0f;
+        outro.Show(gameResult);
     }
 
     private bool ReadAnything()

@@ -54,7 +54,7 @@ MonoBehaviour:
   maxLength: 8
   accel: -9.8
   speed: 3
-  startActive: 1
+  startActive: 0
   bichiInsideVFX: {fileID: 0}
   bounds:
     serializedVersion: 2

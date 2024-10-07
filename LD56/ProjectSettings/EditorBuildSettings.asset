@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/LevelSandbox.unity
     guid: c374c7f46c1b87247a6dda0fcf617982
+  - enabled: 1
+    path: Assets/Scenes/ThanksForPlaying.unity
+    guid: 9bfbeb34f7f507f47a52c5f83003b9fe
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: fcc64613cfc21f945a33f21f7a9fe91b, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

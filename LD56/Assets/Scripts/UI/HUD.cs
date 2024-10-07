@@ -1,9 +1,8 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public enum RescueStatus
@@ -37,11 +36,6 @@ public class HUD : MonoBehaviour
 
     [Header("Level")]
     [SerializeField] TMP_Text level;
-
-    [Header("Explanation")]
-    [SerializeField] GameObject explanationRoot;
-    [SerializeField] TMP_Text explanationText;
-
 
     List<Image> rescueStatusInstances = new();
 

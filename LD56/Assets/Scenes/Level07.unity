@@ -885,21 +885,29 @@ PrefabInstance:
       propertyPath: levelDisplayName
       value: Lv. 7
       objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: nextScene.scenePath
+      value: Assets/Scenes/ThanksForPlaying.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: nextScene.sceneAsset
+      value: 
+      objectReference: {fileID: 102900000, guid: 9bfbeb34f7f507f47a52c5f83003b9fe, type: 3}
     - target: {fileID: 948124788139674603, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_Name
       value: SceneRoot
       objectReference: {fileID: 0}
     - target: {fileID: 1828569881023800475, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0
+      value: -0.810219
       objectReference: {fileID: 0}
     - target: {fileID: 1828569881023800475, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9981785
+      value: 0.99999994
       objectReference: {fileID: 0}
     - target: {fileID: 1828569881023800475, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 2.6277373
       objectReference: {fileID: 0}
     - target: {fileID: 5938255672160525186, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_LocalPosition.x

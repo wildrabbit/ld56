@@ -82,6 +82,7 @@ public class RumbleUtils : MonoBehaviour
         rumbleDuration = -1f;
     }
 
+    
     void OnApplicationLostFocus()
     {
         ForceStop();
