@@ -6,6 +6,7 @@ using UnityEngine;
 public class BallsManager:MonoBehaviour
 {
     public AudioSource popSrc;
+    public AudioClip popClip;
     public List<BallLogic> balls = new();
 
     public int TotalBalls => balls.Count;
@@ -38,7 +39,7 @@ public class BallsManager:MonoBehaviour
     {
         if (popSrc != null)
         {
-            popSrc.Play();
+            popSrc.PlayOneShot(popClip);
         }
         BallPopped?.Invoke(logic, propagate);
     }

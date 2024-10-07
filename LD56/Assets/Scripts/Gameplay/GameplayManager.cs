@@ -75,7 +75,7 @@ public class GameplayManager : MonoBehaviour
         testRestartPressed = testPopPressed = false;
         testDamagePressed = false;
 
-        intro.Show(levelDisplayName, GetGoalString(), timeoutSecs, loseBichis);
+        intro.Show(levelDisplayName, GetGoalString(), timeoutSecs, bichisToSpawn == 0 ? 0 : loseBichis);
         yield return new WaitForSeconds(introTime);
         intro.Hide();
         StartGame();
