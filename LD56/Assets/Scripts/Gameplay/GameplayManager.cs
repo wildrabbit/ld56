@@ -30,7 +30,10 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] BichisManager bichisManager;
     [SerializeField] RumbleUtils rumbleUtils;
     [SerializeField] PlayerLogic player;
+    [SerializeField] HUD hud;
 
+    // Move to LevelData SO
+    [SerializeField] string levelDisplayName;
     [SerializeField] WinCondition winCondition = WinCondition.ZeroBalls;
     [SerializeField] LoseCondition loseCondition = LoseCondition.PlayerDeath;
     [SerializeField] int bichisToSpawn = 4;
@@ -87,15 +90,47 @@ public class GameplayManager : MonoBehaviour
         player.Died += OnPlayerDied;
         player.TookHit += OnPlayerTookDamage;
         player.LostAllHealth += OnPlayerLostHP;
+
+        hud.StartGame(player.HP, BuildRescueStatuses(), levelDisplayName, timeoutSecs - elapsed);
+    }
+
+    private List<RescueStatus> BuildRescueStatuses()
+    {
+        var statuses = new List<RescueStatus>();
+        int numLost = bichisDead;
+        int numRescued = player.BichisRescued;
+        int numActive =
+            ballsManager.balls.FindAll(x => x.bichiInside).Count
+            + bichisManager.AliveBichis;
+        int numPending = bichisToSpawn - numLost - numRescued - numActive;
+        for(int i = 0; i < numRescued; ++i)
+        {
+            statuses.Add(RescueStatus.Rescued);
+        }
+        for (int i = 0; i < numActive; ++i)
+        {
+            statuses.Add(RescueStatus.Active);
+        }
+        for (int i = 0; i < numPending; ++i)
+        {
+            statuses.Add(RescueStatus.Pending);
+        }
+        for (int i = 0; i < numLost; ++i)
+        {
+            statuses.Add(RescueStatus.Dead);
+        }
+        return statuses;
     }
 
     private void OnPlayerLostHP(PlayerLogic logic)
     {
+        hud.SetHP(logic.HP);
         rumbleUtils.PlayStronk();
     }
 
-    private void OnPlayerTookDamage(PlayerLogic logic, int arg2)
+    private void OnPlayerTookDamage(PlayerLogic logic, int hp)
     {
+        hud.SetHP(logic.HP);
         rumbleUtils.PlaySmol();
     }
 
@@ -173,6 +208,10 @@ public class GameplayManager : MonoBehaviour
             lastSecond = secsElapsed;
             Debug.Log($"T:{lastSecond}s");
         }
+
+        float remaining = Mathf.Max(timeoutSecs - elapsed, 0f);
+        hud.SetTimer(remaining);
+
         if(elapsed > timeoutSecs)
         {
             SetResult(GameResult.Lost);
@@ -204,6 +243,9 @@ public class GameplayManager : MonoBehaviour
         {
             player.Hit(1);
         }
+
+        hud.SetHP(player.HP);
+        hud.UpdateRescuePanel(BuildRescueStatuses());
 
         EvaluateVictory();
     }

@@ -8,17 +8,19 @@ public class BichiLogic : MonoBehaviour
     const string ground = "ground";
 
     [SerializeField] bool startActive;
-    
+    [SerializeField] float timeLimit = -1;
+
     [SerializeField] float dropSpeed = 3f; // It won't use gravity!
     [SerializeField] float driftLimit = 0.2f; //Horz axis
     [SerializeField] float driftFreq = 3f; //Horz axis
 
-
     public event Action<BichiLogic> Destroyed;
-    public event Action<BichiLogic> Died;
+    public event Action<BichiLogic> Dead;
 
     bool active = false;
     Vector2 velocity;
+
+    float elapsed;
 
     CircleCollider2D hitCollider;
     ContactFilter2D boundsFilter;
@@ -47,6 +49,14 @@ public class BichiLogic : MonoBehaviour
         startNoise = UnityEngine.Random.Range(0, 360);
         startPos = transform.position;
         velocity = Vector2.zero;
+        if(timeLimit > 0f)
+        {
+            elapsed = 0f;
+        }
+        else
+        {
+            elapsed = -1f;
+        }
         boundsHit.Clear();
     }
 
@@ -72,6 +82,15 @@ public class BichiLogic : MonoBehaviour
             return;
         }
 
+        if(elapsed >= 0f)
+        {
+            elapsed += Time.deltaTime;
+            if (elapsed >= timeLimit)
+            {
+                Die();
+            }
+        }
+
         Vector2 pos = transform.position;
         Vector2 hitColliderPos = (Vector2)hitCollider.transform.position + hitCollider.offset;
         Vector2 delta = hitColliderPos - pos;
@@ -92,12 +111,18 @@ public class BichiLogic : MonoBehaviour
         }
         else if(Array.FindIndex(boundsHit, 0, boundsHit.Length, x => x.gameObject.CompareTag(ground)) >= 0)
         {
-            Kill();
-            Died?.Invoke(this);
+            Die();
         }
         else
         {
             transform.position = pos;
         }
+    }
+
+    public void Die()
+    {
+        Dead?.Invoke(this);
+        // Animate
+        Kill();
     }
 }

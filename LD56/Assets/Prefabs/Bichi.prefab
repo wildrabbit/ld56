@@ -134,7 +134,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startActive: 0
-  dropSpeed: 2
+  timeLimit: 30
+  dropSpeed: 2.25
   driftLimit: 0.2
   driftFreq: 4
 --- !u!1 &7242683902547439048

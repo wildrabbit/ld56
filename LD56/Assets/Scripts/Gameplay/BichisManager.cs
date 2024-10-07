@@ -13,6 +13,8 @@ public class BichisManager: MonoBehaviour
     public event Action<BichiLogic> GeneratedBichi;
     public event Action<BichiLogic> BichiDied;
 
+    public int AliveBichis => livingBichis.Count;
+
     List<BichiLogic> livingBichis = new();
 
     List<int> ballPopsSpawningBichis = new();
@@ -26,7 +28,7 @@ public class BichisManager: MonoBehaviour
         foreach(var b in startBichis)
         {
             b.transform.SetParent(bichisRoot, worldPositionStays: true);
-            b.Died += OnBichiDied;
+            b.Dead += OnBichiDied;
             b.Destroyed += OnBichiDestroyed;
             livingBichis.Add(b);
         }
@@ -95,7 +97,7 @@ public class BichisManager: MonoBehaviour
     private void OnBichiDestroyed(BichiLogic logic)
     {
         logic.Destroyed -= OnBichiDestroyed;
-        logic.Died -= OnBichiDied;
+        logic.Dead -= OnBichiDied;
         livingBichis.Remove(logic);
     }
 
@@ -107,7 +109,7 @@ public class BichisManager: MonoBehaviour
         bichi.transform.position = pos;
         bichi.Activate();
         bichi.Destroyed += OnBichiDestroyed;
-        bichi.Died += OnBichiDied;
+        bichi.Dead += OnBichiDied;
         livingBichis.Add(bichi);
         GeneratedBichi?.Invoke(bichi);
     }
@@ -144,7 +146,7 @@ public class BichisManager: MonoBehaviour
             if(bichi != null)
             {
                 bichi.Destroyed -= OnBichiDestroyed;
-                bichi.Died -= OnBichiDied;
+                bichi.Dead -= OnBichiDied;
                 Destroy(bichi.gameObject);
             }
         }

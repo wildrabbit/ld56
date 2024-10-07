@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -21,8 +22,8 @@ public class PlayerInput : MonoBehaviour
 
     private bool ReadShoot()
     {
-        return (Keyboard.current != null && (Keyboard.current.xKey.isPressed || Keyboard.current.zKey.isPressed || Keyboard.current.spaceKey.isPressed))
-            || (Gamepad.current != null && Gamepad.current.aButton.isPressed);
+        return InputUtils.IsAnyKeyPressed(new Key[] { Key.X, Key.Z, Key.Space })
+            || InputUtils.IsGamepadButtonPressed(GamepadButton.A);
     }
 
     public void Deactivate() 
@@ -56,22 +57,20 @@ public class PlayerInput : MonoBehaviour
     {
         float motion = 0f;
         float gamepadAxis = 0f;
+
         if (Gamepad.current != null)
         {
             gamepadAxis = Gamepad.current.leftStick.x.value;
         }
 
         float keyboardAxis = 0f;
-        if ((Keyboard.current !=null))
+        if (InputUtils.IsAnyKeyPressed(new Key[] { Key.LeftArrow, Key.A }))
         {
-            if (Keyboard.current.leftArrowKey.isPressed || Keyboard.current.aKey.isPressed)
-            {
-                keyboardAxis = -1f;
-            }
-            else if (Keyboard.current.rightArrowKey.isPressed || Keyboard.current.dKey.isPressed)
-            {
-                keyboardAxis = 1f;
-            }
+            keyboardAxis = -1f;
+        }
+        else if (InputUtils.IsAnyKeyPressed(new Key[] { Key.RightArrow, Key.D }))
+        {
+            keyboardAxis = 1f;
         }
         
         if (gamepadAxis != 0f)

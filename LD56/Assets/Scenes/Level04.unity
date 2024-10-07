@@ -415,6 +415,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
+      propertyPath: levelDisplayName
+      value: Lv. 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 355816405848189715, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: nextScene.scenePath
       value: Assets/Scenes/Level05.unity
       objectReference: {fileID: 0}

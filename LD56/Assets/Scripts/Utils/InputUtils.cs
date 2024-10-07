@@ -13,7 +13,7 @@ public static class InputUtils
         return ValidKeyboard(out Keyboard keyboard) && keyboard.anyKey.isPressed;
     }
 
-    public static bool IsKeyPressed(Key[] keys)
+    public static bool IsAnyKeyPressed(Key[] keys)
     {
         if (!ValidKeyboard(out var keyboard))
         {
@@ -48,7 +48,10 @@ public static class InputUtils
 
     public static bool IsAnyGamepadButtonPressed(bool includeSticks = true)
     {        
-        ValidGamepad(out var gamepad);
+        if (!ValidGamepad(out var gamepad))
+        {
+            return false;
+        }
         GamepadButton[] converted = (GamepadButton[])Enum.GetValues(typeof(GamepadButton));
         bool any = IsAnyGamepadButtonPressed(converted);
         return any 
@@ -96,5 +99,16 @@ public static class InputUtils
     {
         gamepad = Gamepad.current;
         return gamepad != null;
+    }
+
+    public static bool TryGetGamepadStickValue(int stick, out Vector2 stickValue)
+    {
+        stickValue = Vector2.zero;
+        if(!ValidGamepad(out Gamepad gamepad))
+        {
+            return false;
+        }
+        stickValue = GetGamepadStickValue(gamepad, stick);
+        return true;
     }
 }

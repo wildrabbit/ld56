@@ -29,6 +29,8 @@ public class PlayerLogic : MonoBehaviour
     public Transform groundAttachment;
     public int BichisRescued => bichisRescued;
 
+    public int HP => hp;
+
     PlayerWeapon currentWeapon;
     PlayerMovement movement;
     PlayerInput input;
