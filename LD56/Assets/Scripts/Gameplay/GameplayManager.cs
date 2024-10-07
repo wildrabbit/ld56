@@ -28,6 +28,7 @@ public class GameplayManager : MonoBehaviour
 {
     [SerializeField] BallsManager ballsManager;
     [SerializeField] BichisManager bichisManager;
+    [SerializeField] RumbleUtils rumbleUtils;
     [SerializeField] PlayerLogic player;
 
     [SerializeField] WinCondition winCondition = WinCondition.ZeroBalls;
@@ -39,6 +40,8 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] float timeoutSecs;
     [SerializeField] float masterTimeSecs;
     [SerializeField] float gameOverDelay = 2f;
+
+    [SerializeField] int nextSceneIndex = -1;
 
     bool testRestartPressed;
     bool testDamagePressed;
@@ -82,10 +85,23 @@ public class GameplayManager : MonoBehaviour
         
         player.StartGame();
         player.Died += OnPlayerDied;
+        player.TookHit += OnPlayerTookDamage;
+        player.LostAllHealth += OnPlayerLostHP;
+    }
+
+    private void OnPlayerLostHP(PlayerLogic logic)
+    {
+        rumbleUtils.PlayStronk();
+    }
+
+    private void OnPlayerTookDamage(PlayerLogic logic, int arg2)
+    {
+        rumbleUtils.PlaySmol();
     }
 
     private void OnBichiDied(BichiLogic logic)
     {
+        rumbleUtils.PlaySmol();
         bichisDead++;
         if(loseCondition == LoseCondition.LostBichis && bichisDead >= loseBichis)
         {
@@ -134,7 +150,18 @@ public class GameplayManager : MonoBehaviour
             }
             if (ReadAnything())
             {
-                Restart();
+                if(gameResult == GameResult.Won)
+                {
+                    if (nextSceneIndex >= 0)
+                    {
+                        NextLevel();
+                    }
+                    else PlayLevel(0);
+                }
+                else
+                {
+                    Restart();
+                }
             }
             return;
         }
@@ -179,6 +206,16 @@ public class GameplayManager : MonoBehaviour
         }
 
         EvaluateVictory();
+    }
+
+    private void NextLevel()
+    {
+        PlayLevel(nextSceneIndex);
+    }
+
+    private void PlayLevel(int idx)
+    {
+        SceneManager.LoadScene(idx);
     }
 
     private bool ReadDamageTest()
@@ -243,6 +280,6 @@ public class GameplayManager : MonoBehaviour
 
     private void Restart()
     {
-        SceneManager.LoadScene(0);
+        PlayLevel(SceneManager.GetActiveScene().buildIndex);
     }
 }

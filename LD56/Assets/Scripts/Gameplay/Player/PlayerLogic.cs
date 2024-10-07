@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum Facing
 {
@@ -34,6 +35,7 @@ public class PlayerLogic : MonoBehaviour
     PlayerInput input;
 
     public event Action<PlayerLogic, int> TookHit;
+    public event Action<PlayerLogic> LostAllHealth;
     public event Action<PlayerLogic> Died;
     public event Action<PlayerLogic, int> CollectedBichis;
 
@@ -225,6 +227,7 @@ public class PlayerLogic : MonoBehaviour
         {
             Debug.Log($"<color=cyan>[PLAYER]</color> DIED ☠️");
             animator.Play(dead);
+            LostAllHealth?.Invoke(this);
             Deactivate();
             StartCoroutine(DelayEvent());
             // visuals;
@@ -247,7 +250,6 @@ public class PlayerLogic : MonoBehaviour
     private IEnumerator DelayEvent()
     {
         yield return new WaitForSeconds(1f);
-
         Died?.Invoke(this);
     }
 

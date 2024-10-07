@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e62ae7cf59645c4c81fae1be15ff980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2.5
+  moveSpeed: 5
   numHP: 3
   startActive: 0
   defaultWeapon: {fileID: 3177004752205890028}
