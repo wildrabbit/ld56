@@ -254,6 +254,7 @@ public class GameplayManager : MonoBehaviour
             case GameResult.None:
                 return;
             case GameResult.Won:
+                player.PlayWin();
                 string masteryString = (mastered ? "🌟" : "");
                 Debug.Log($"<color=yellow>[RESULT]</color> WON! {masteryString}😎{masteryString}");
                 break;

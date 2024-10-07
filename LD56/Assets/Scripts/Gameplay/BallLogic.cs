@@ -14,6 +14,7 @@ public class BallLogic : MonoBehaviour
     [SerializeField] float accel = -9.8f;
     [SerializeField] float speed;
     [SerializeField] bool startActive;
+    [SerializeField] GameObject bichiInsideVFX;
 
     [SerializeField] Rect bounds = new Rect(-10f, -5.5f, 20, 11);
 
@@ -42,6 +43,10 @@ public class BallLogic : MonoBehaviour
         acceleration = accel * Vector2.up;
         velocity = Vector2.zero;
         bounceLayer = LayerMask.GetMask("Bounds", "Destructible");
+        if (bichiInsideVFX != null)
+        {
+            bichiInsideVFX.SetActive(bichiInside);
+        }
 
         if(startActive)
         {
@@ -177,5 +182,14 @@ public class BallLogic : MonoBehaviour
         }
 
         transform.position = pos;
+    }
+
+    internal void SetBichiInside(bool v)
+    {
+        bichiInside = v;
+        if (bichiInsideVFX != null)
+        {
+            bichiInsideVFX.SetActive(v);
+        }
     }
 }

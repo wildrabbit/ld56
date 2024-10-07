@@ -54,14 +54,14 @@ public class BichisManager: MonoBehaviour
 
         foreach(var b in ballsManager.balls)
         {
-            b.bichiInside = false;
+            b.SetBichiInside(false);
             if (b.tier == 1)
             {
                 spawned++;
                 if (nextIndex < ballPopsSpawningBichis.Count &&
                     spawned == ballPopsSpawningBichis[nextIndex])
                 {
-                    b.bichiInside = true;
+                    b.SetBichiInside(true);
                     nextIndex++;
                 }
             }
@@ -86,7 +86,7 @@ public class BichisManager: MonoBehaviour
             if(nextIndex < ballPopsSpawningBichis.Count
                 && ballPopsSpawningBichis[nextIndex] == spawned)
             {
-                logic.bichiInside = true;
+                logic.SetBichiInside(true);
                 nextIndex++;
             }
         }

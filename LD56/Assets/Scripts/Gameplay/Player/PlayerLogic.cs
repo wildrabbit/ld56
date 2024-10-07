@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public enum Facing
 {
@@ -45,7 +44,7 @@ public class PlayerLogic : MonoBehaviour
     int bichisRescued;
     public Vector2 startPos;
     LayerMask ballsMask;
-    ContactFilter2D bichisFilter;
+    LayerMask bichisMask;
     List<Collider2D> bichiColliders = new List<Collider2D>();
 
     GameResult gameResult;
@@ -55,6 +54,7 @@ public class PlayerLogic : MonoBehaviour
     private int shoot;
     private int hit;
     private int dead;
+    private int win;
 
     private void Awake()
     {
@@ -64,16 +64,14 @@ public class PlayerLogic : MonoBehaviour
         shoot = Animator.StringToHash("Shoot");
         hit = Animator.StringToHash("Hit");
         dead = Animator.StringToHash("Dead");
+        win = Animator.StringToHash("Win");
 
         startPos = transform.position;
         active = startActive;
         movement = GetComponent<PlayerMovement>();
         input = GetComponent<PlayerInput>();
-        bichisFilter = new ContactFilter2D()
-        {
-            useLayerMask = true,
-            layerMask = LayerMask.GetMask("Bichis")
-        };
+        ballsMask = LayerMask.GetMask("Balls");
+        bichisMask = LayerMask.GetMask("Bichis");
     }
 
     public void StartGame()
@@ -131,7 +129,7 @@ public class PlayerLogic : MonoBehaviour
         Vector2 boxPos = (Vector2)lifeCollider.transform.position + lifeCollider.offset;
         if (invulnerableElapsed < 0f)
         {
-            var ballHit = Physics2D.OverlapBox(boxPos, lifeCollider.size, ballsMask);
+            var ballHit = Physics2D.OverlapBox(boxPos, lifeCollider.size, 0f, ballsMask);
             if (ballHit != null)
             {
                 var ball = ballHit.GetComponentInParent<BallLogic>();
@@ -147,7 +145,7 @@ public class PlayerLogic : MonoBehaviour
             }
         }
 
-        var colliders = Physics2D.OverlapBoxAll((Vector2)bichiCollectCollider.transform.position + bichiCollectCollider.offset, bichiCollectCollider.size, LayerMask.GetMask("Bichis"));
+        var colliders = Physics2D.OverlapBoxAll((Vector2)bichiCollectCollider.transform.position + bichiCollectCollider.offset, bichiCollectCollider.size, 0f, bichisMask);
         // Physics2D.OverlapCollider(bichiCollectCollider, bichisFilter, bichiColliders);
         if (colliders.Length > 0)
         {
@@ -263,6 +261,11 @@ public class PlayerLogic : MonoBehaviour
                 invulnerableElapsed = -1f;
             }
         }
+    }
+
+    public void PlayWin()
+    {
+        animator.Play(win);
     }
 
     public void Hit(int dmg)
