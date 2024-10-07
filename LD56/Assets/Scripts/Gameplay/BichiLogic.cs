@@ -5,6 +5,7 @@ using UnityEngine;
 public class BichiLogic : MonoBehaviour
 {
     const string ceiling = "ceiling";
+    const string ground = "ground";
 
     [SerializeField] bool startActive;
     
@@ -89,10 +90,14 @@ public class BichiLogic : MonoBehaviour
         {
             return;
         }
-        else
+        else if(Array.FindIndex(boundsHit, 0, boundsHit.Length, x => x.gameObject.CompareTag(ground)) >= 0)
         {
             Kill();
             Died?.Invoke(this);
+        }
+        else
+        {
+            transform.position = pos;
         }
     }
 }

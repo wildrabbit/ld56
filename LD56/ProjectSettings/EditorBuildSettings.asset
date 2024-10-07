@@ -30,6 +30,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level07.unity
     guid: a34909433b788bd4aa0a7e425b4503ed
   - enabled: 0
+    path: Assets/Scenes/Level08.unity
+    guid: 01f1679bbea30904dbc23d31d8d037ff
+  - enabled: 0
     path: Assets/Scenes/LevelSandbox.unity
     guid: c374c7f46c1b87247a6dda0fcf617982
   m_configObjects:

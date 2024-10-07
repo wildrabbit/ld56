@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 2926489475207728404}
   m_Layer: 6
   m_Name: Down
-  m_TagString: Untagged
+  m_TagString: ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -761,9 +761,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 1.0027778
-    width: 0.76718754
-    height: 0.76718754
+    y: 0
+    width: 1
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1229,14 +1229,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5938255672160525186}
     m_Modifications:
-    - target: {fileID: 1549890412951896725, guid: 368a3e6b4fe73c549bcedf047512ccc0, type: 3}
-      propertyPath: numHP
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1549890412951896725, guid: 368a3e6b4fe73c549bcedf047512ccc0, type: 3}
-      propertyPath: moveSpeed
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 6328782431392291100, guid: 368a3e6b4fe73c549bcedf047512ccc0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

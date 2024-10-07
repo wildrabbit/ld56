@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class ChainDestructible : MonoBehaviour
 {
-    [SerializeField] Transform nodesRoot;
     [SerializeField] bool loop = false;
     [SerializeField] float interval;
-    List<ChainNode> chainLinks = new();
+    [SerializeField] List<ChainNode> chainLinks = new();
 
     Coroutine coroutine;
 
     private void Awake()
     {
-        chainLinks = new List<ChainNode>(nodesRoot.GetComponentsInChildren<ChainNode>());
+        //chainLinks = new List<ChainNode>(nodesRoot.GetComponentsInChildren<ChainNode>());
 
         if (chainLinks.Count < 2)
         {
