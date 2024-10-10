@@ -959,8 +959,8 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: -0.097222224
-    width: 1.396875
+    y: 0.5638889
+    width: 0.75625
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
@@ -1050,7 +1050,7 @@ MonoBehaviour:
   m_AssetsPPU: 32
   m_RefResolutionX: 640
   m_RefResolutionY: 360
-  m_CropFrame: 2
+  m_CropFrame: 4
   m_GridSnapping: 0
   m_FilterMode: 1
   m_UpscaleRT: 0
@@ -1398,7 +1398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popSrc: {fileID: 7498581103811523551}
-  popClip: {fileID: 0}
+  popClip: {fileID: 8300000, guid: e9ceadf233225d349b00f40d90c01622, type: 3}
   balls: []
 --- !u!82 &7498581103811523551
 AudioSource:

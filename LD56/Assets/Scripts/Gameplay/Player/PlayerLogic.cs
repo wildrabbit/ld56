@@ -157,6 +157,11 @@ public class PlayerLogic : MonoBehaviour
                 var bichiLogic = bichi.gameObject.GetComponentInParent<BichiLogic>();
                 if(bichiLogic != null)
                 {
+                    if (bichiLogic.flying)
+                    {
+                        Debug.LogWarning($"<color=cyan>[PLAYER]</color> Wrongly picked a bichi! 😱");
+                    }
+
                     bichisRescued++;
                     bichiLogic.Kill();
                     Debug.Log($"<color=cyan>[PLAYER]</color> Picked a bichi! Rescued: {bichisRescued} 🐣");

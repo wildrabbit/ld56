@@ -107,21 +107,9 @@ public class BichisManager: MonoBehaviour
         var bichi = Instantiate<BichiLogic>(bichiPrefab, bichisRoot);
         livingBichis.Add(bichi);
         GeneratedBichi?.Invoke(bichi);
-
-        var pos = ball.transform.position;
-        bichi.transform.position = pos;
-        bichi.Deactivate();
-        var localScale = bichi.transform.localScale;
-        bichi.transform.localScale = localScale * 0.5f;
-        float delta = bichisSpawnRef.position.y - pos.y;
-        float duration = delta / 10f;
-        bichi.transform.DOMoveY(bichisSpawnRef.position.y, duration).SetEase(Ease.OutQuart).OnComplete(() =>
-        {
-            bichi.transform.localScale = localScale;
-            bichi.Activate();
-            bichi.Destroyed += OnBichiDestroyed;
-            bichi.Dead += OnBichiDied;
-        });
+        bichi.LaunchSequence(ball.transform.position, bichisSpawnRef.position);
+        bichi.Destroyed += OnBichiDestroyed;
+        bichi.Dead += OnBichiDied;
     }
 
 

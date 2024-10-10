@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class BichiLogic : MonoBehaviour
     [SerializeField] bool startActive;
     [SerializeField] float timeLimit = -1;
 
+    [SerializeField] float launchSpeed = 10f;
     [SerializeField] float dropSpeed = 3f; // It won't use gravity!
     [SerializeField] float driftLimit = 0.2f; //Horz axis
     [SerializeField] float driftFreq = 3f; //Horz axis
@@ -18,6 +20,7 @@ public class BichiLogic : MonoBehaviour
     public event Action<BichiLogic> Dead;
 
     bool active = false;
+    public bool flying = false;
     Vector2 velocity;
 
     float elapsed;
@@ -30,12 +33,15 @@ public class BichiLogic : MonoBehaviour
     LayerMask boundsMask;
     LayerMask destructibleMask;
 
+    Vector3 defaultScale;
+
     private void Awake()
     {
         active = startActive;
         hitCollider = GetComponentInChildren<CircleCollider2D>();
         boundsMask = LayerMask.GetMask("Bounds");
         destructibleMask = LayerMask.GetMask("Destructible");
+        defaultScale = transform.localScale;
     }
 
     public void StartGame()
@@ -49,7 +55,8 @@ public class BichiLogic : MonoBehaviour
         startNoise = UnityEngine.Random.Range(0, 360);
         startPos = transform.position;
         velocity = Vector2.zero;
-        if(timeLimit > 0f)
+        hitCollider.enabled = true;
+        if (timeLimit > 0f)
         {
             elapsed = 0f;
         }
@@ -63,6 +70,7 @@ public class BichiLogic : MonoBehaviour
     public void Deactivate()
     {
         active = false;
+        hitCollider.enabled = false;
         velocity = Vector2.zero;
     }
     public void Kill(bool notify = true)
@@ -124,5 +132,31 @@ public class BichiLogic : MonoBehaviour
         Dead?.Invoke(this);
         // Animate
         Kill();
+    }
+
+    internal void LaunchSequence(Vector3 ballPosition, Vector3 flyTargetReference)
+    {
+        var pos = ballPosition;
+        transform.position = pos;
+        Deactivate();
+        transform.localScale = defaultScale * 0.5f;
+        float flyHeight = flyTargetReference.y;
+        float delta = flyHeight - pos.y;
+        float duration = delta / launchSpeed;
+        flying = true;
+        transform.DOMoveY(flyHeight, duration).SetEase(Ease.OutQuart).OnComplete(OnLaunchSequenceCompleted);
+    }
+
+    private void OnLaunchSequenceCompleted()
+    {
+        transform.localScale = defaultScale;
+        flying = false;
+        Activate();
+    }
+
+    private void OnDestroy()
+    {
+        int tweensKilled = DOTween.Kill(this.transform);
+        Debug.Log($"Destroy bichi - {tweensKilled} tweens killed");
     }
 }

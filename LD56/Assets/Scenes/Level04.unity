@@ -436,7 +436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1828569881023800475, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9981785
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1828569881023800475, guid: 7dabe9a488e236c47a45dbbb3d4037ad, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
